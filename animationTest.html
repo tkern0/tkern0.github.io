@@ -3,14 +3,15 @@
 <head>
     <meta charset="utf-8"/>
     <script>
+    var MIN_MS = 16;
     var currentElements = null;
     var futureElements = null;
     var time = -1;
-    var stop = false;
     var canvas = null;
     var ctx = null;
     var paused = false;
     var started = false;
+    var render = null;
     // I'd change this based on the audio if you can get that working
     var colour = "#000000";
 
@@ -72,18 +73,19 @@
             currentElements = [];
             canvas = document.getElementById("outputCanvas");
             ctx = canvas.getContext("2d");
-            draw();
+            render = setInterval(draw, MIN_MS);
         }
     }
 
     function pause() {
         if (started) {
             if (paused) {
+                clearInterval(render);
                 document.getElementById("pause").innerHTML = "Pause"
                 paused = false;
                 draw();
             } else {
-                stop = true;
+                render = setInterval(draw, MIN_MS);
                 document.getElementById("pause").innerHTML = "Unpause"
                 paused = true;
             }
@@ -92,14 +94,14 @@
 
     function reset() {
         if (started) {
-            stop = !paused;
+            clearInterval(render);
             started = false;
             paused = false;
             currentElements = null;
             futureElements = null;
             time = -1;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            document.getElementById("time").innerHTML = "Current Frame: n/a";
+            document.getElementById("time").innerHTML = "Current Time: n/a";
             document.getElementById("pause").innerHTML = "Pause"
         }
     }
@@ -108,20 +110,17 @@
         if (futureElements != null && currentElements != null &&
             futureElements.length == 0 && currentElements.length == 0) {
             reset();
-        }
-        if (stop) {
-            stop = false;
             return;
         }
-        time++;
-        document.getElementById("time").innerHTML = "Current Frame: " + time;
+        time += MIN_MS;
+        document.getElementById("time").innerHTML = "Current Time: " + time / 1000;
 
         var redraw = false;
         /* Check for new elements to draw
           Because this list is sorted, once it fails once we know there won't
            be any more we need to add
         */
-        while (futureElements.length > 0 && time == futureElements[0][0]) {
+        while (futureElements.length > 0 && time >= futureElements[0][0]) {
             currentElements.push(futureElements.shift())
             redraw = true;
         }
@@ -141,7 +140,7 @@
           Again because it's sorted we only need this to fail once to know that
            we're done
         */
-        while (currentElements.length > 0 && time == currentElements[0][1]) {
+        while (currentElements.length > 0 && time >= currentElements[0][1]) {
             currentElements.shift();
             redraw = true;
         }
@@ -181,8 +180,6 @@
                 }
             }
         }
-
-        requestAnimationFrame(draw)
     }
 
     </script>
@@ -194,16 +191,16 @@
         <button type="button" onclick="pause()" id="pause">Pause</button>
         <button type="button" onclick="reset()">Reset</button>
     </div>
-    <div id="time">Current Frame: n/a</div>
+    <div id="time">Current Time: n/a</div>
     <textarea id="inputText" style="width: 640px; height: 480px;">
-Time: 0, 180
+Time: 0, 3000
 Line: 0, 0, 200, 200
 Circle: 100, 100, 50
 
-Time: 0, 300
+Time: 0, 5000
 Rect: 200, 300, 400, 500
 
-Time: 90, 270
+Time: 1500, 4500
 Text: &quot;Test&quot;, &quot;30px Arial&quot;, 30, 30
 </textarea>
 </body>
