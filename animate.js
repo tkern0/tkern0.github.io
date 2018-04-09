@@ -26,9 +26,6 @@ var colour = "#000000";
 function parseInput() {
     var allText = document.getElementById("inputText").value.split("\n");
     var output = [];
-    var imgCount = 0;
-    var hiddenChamber = document.getElementById("hiddenChamber");
-    //hiddenChamber.innerHTML = ""
 
     var cTimes = [0, -1];
     // This makes it really easy to add new elements
