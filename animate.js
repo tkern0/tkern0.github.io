@@ -112,7 +112,8 @@ function draw() {
     document.getElementById("time").innerHTML =  displayTime;
 
     var redraw = false;
-    /* Check for new elements to draw
+    /*
+      Check for new elements to draw
       Because this list is sorted, once it fails once we know there won't
        be any more we need to add
     */

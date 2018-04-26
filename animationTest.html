@@ -2,18 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="style.css">
     <script type="text/javascript" src="animate.js"></script>
     <script type="text/javascript" src="lyrics.js"></script>
+    <script type="text/javascript" src="verseConvert.js"></script>
+    <script type="text/javascript" src="autoConvert.js"></script>
+    <script type="text/javascript" src="manualConvert.js"></script>
+    <script>
+        // Canvases don't scale nicely with css
+        function fixCanvas() {
+            var canvas = document.getElementById("outputCanvas");
+            var w = window.innerWidth * 0.75;
+            var h = w * 9/16;
+            canvas.width = w;
+            canvas.height = h;
+            canvas.style.width = w;
+            canvas.style.height = h;
+        }
+
+        window.onload = fixCanvas;
+        window.onresize = fixCanvas;
+    </script>
 </head>
 <body>
-    <canvas id="outputCanvas" width="640" height="480" style="border: 1px solid black;"></canvas>
-    <div>
+    <canvas id="outputCanvas" class="center"></canvas>
+    <div class="center">
         <button type="button" onclick="start()">Start</button>
         <button type="button" onclick="pause()" id="pause">Pause</button>
         <button type="button" onclick="reset()">Reset</button>
     </div>
-    <div id="time">Current Time: n/a</div>
-    <textarea id="inputText" style="width: 640px; height: 480px;">
+    <div id="time" class="center">Current Time: n/a</div>
+    <textarea id="inputText" rows=30 class="center">
 Time: 0, 3000
 Line: 0, 0, 200, 200
 Circle: 100, 100, 50
@@ -22,12 +41,27 @@ Time: 0, 5000
 Rect: 200, 300, 400, 500
 
 Time: 1500, 4500
-Text: &quot;Test&quot;, &quot;30px Arial&quot;, 30, 30
-</textarea>
-<br>
-Song length (s): <input type="number" id="songLen" value="245"><br>
-<button type="button" onclick="convertLyrics()">Convert Lyrics</button><br>
-<textarea id="lyrics" style="width: 640px; height: 480px;">
+Text: &quot;Test&quot;, &quot;30px Arial&quot;, 30, 30</textarea>
+    <br><br><br>
+    <h1 class="center">Converters</h1>
+    <table class="center"><tr>
+    <td>
+        <div class="center">
+            Youtube link: <input type="text" id="videoLink" value="https://youtu.be/iKzRIweSBLA">
+            <button type="button" onclick="changeVideo()">Submit</button>
+        </div>
+        <div id="video">
+            <iframe class="center" src="https://www.youtube.com/embed/iKzRIweSBLA" allowfullscreen="" width="560" height="315" frameborder="0"></iframe>
+        </div>
+        <br>
+        <div id="converters">
+            <button class="center bigButton" type="button" onclick="autoConvert()">Auto Convert</button>
+            <button class="center bigButton" type="button" onclick="verseBased()">Verse-Based Auto Convert</button>
+            <button class="center bigButton" type="button" onclick="manual()">Manual Convert</button>
+        </div>
+        <div class="center" id="errors"></div>
+    </td>
+    <td><textarea id="lyrics" rows=50>
 I found a love for me
 Darling just dive right in
 And follow my lead
@@ -38,10 +72,12 @@ Not knowing what it was
 I will not give you up this time
 But darling, just kiss me slow, your heart is all I own
 And in your eyes you're holding mine
+
 Baby, I'm dancing in the dark with you between my arms
 Barefoot on the grass, listening to our favorite song
 When you said you looked a mess, I whispered underneath my breath
 But you heard it, darling, you look perfect tonight
+
 Well I found a woman, stronger than anyone I know
 She shares my dreams, I hope that someday I'll share her home
 I found a love, to carry more than just my secrets
@@ -52,15 +88,18 @@ I know we'll be alright this time
 Darling, just hold my hand
 Be my girl, I'll be your man
 I see my future in your eyes
+
 Baby, I'm dancing in the dark, with you between my arms
 Barefoot on the grass, listening to our favorite song
 When I saw you in that dress, looking so beautiful
 I don't deserve this, darling, you look perfect tonight
+
 Baby, I'm dancing in the dark, with you between my arms
 Barefoot on the grass, listening to our favorite song
 I have faith in what I see
 Now I know I have met an angel in person
 And she looks perfect
 I don't deserve this
-You look perfect tonight</textarea>
+You look perfect tonight</textarea></td>
+</tr></table>
 </body>

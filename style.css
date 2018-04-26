@@ -1,0 +1,52 @@
+.center {
+    display: table;
+    margin: 0 auto;
+}
+
+#outputCanvas {
+    border: 1px solid black;
+}
+
+button {
+    width: 75px;
+}
+
+#inputText{
+    width: 40%;
+}
+
+table {
+    width: 100%;
+}
+
+td {
+    width: 50%;
+    vertical-align: top;
+}
+
+input[type=number] {
+    width: 50px;
+}
+
+.bigButton {
+    width: 350px;
+    height: 50px;
+    font-size: 25px;
+}
+
+#verse {
+    width: 560px;
+}
+
+#currentLine {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+#nextLine {
+    font-size: 20px;
+}
+
+#lyrics {
+    width: 100%;
+}
