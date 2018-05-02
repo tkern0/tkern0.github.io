@@ -1,3 +1,4 @@
+var REACTION_MS = 250;
 var manualStartTime = -1;
 var manualLines = [];
 var manualLineNum = 0;
@@ -8,6 +9,7 @@ var output = null;
 function manual() {
     document.getElementById("converters").hidden = true;
     document.getElementById("manualDiv").hidden = false;
+
     manualStartTime = -1;
     var lyrics = document.getElementById("lyrics").value.trim();
     manualLines = lyrics.replace(/\n\s*\n/g, "\n").split("\n");
@@ -15,7 +17,7 @@ function manual() {
     manualTimerInterval = null;
     manualCurrentTime = -1;
     output = null;
-    console.log(manualLines)
+
     updateManualLines(0);
 }
 
@@ -36,7 +38,7 @@ function manualNext() {
         [x, y, currentFont] = fitLine(line);
 
         output.value += "Time: " + Math.round(manualStartTime) + ", "
-                        + Math.round(manualCurrentTime - 150) + "\n"
+                        + Math.round(manualCurrentTime - REACTION_MS) + "\n"
                         + "Text: \"" + line + "\", \"" + currentFont + "\", "
                         + x + ", " + y + "\n";
 
