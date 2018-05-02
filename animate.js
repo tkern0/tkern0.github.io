@@ -10,6 +10,11 @@ var render = null;
 // I'd change this based on the audio if you can get that working
 var colour = "#000000";
 
+// Chrome can't wait decimal ms and rounds down so the animation runs fast
+if (!!window.chrome && !!window.chrome.webstore) {
+    WAIT_MS = Math.round(WAIT_MS);
+}
+
 /*
   This is just one basic way of editing it I wanted to fiddle with, we
    should switch to something more user friendly for the final product
