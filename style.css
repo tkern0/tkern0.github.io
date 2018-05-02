@@ -13,12 +13,13 @@ button {
 
 textarea {
     resize: none;
+    white-space: pre
 }
-/*
+
 #inputText {
     width: 40%;
 }
-*/
+
 table {
     width: 100%;
 }

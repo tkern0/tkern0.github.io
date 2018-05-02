@@ -1,4 +1,3 @@
-var CONVERTERS_BASE_HTML = "";
 var manualStartTime = -1;
 var manualLines = [];
 var manualLineNum = 0;
@@ -7,13 +6,8 @@ var manualCurrentTime = -1;
 var output = null;
 
 function manual() {
-    CONVERTERS_BASE_HTML = document.getElementById("converters").innerHTML;
-    document.getElementById("converters").innerHTML = `
-        <div class="center" id="currentLine">Error finding lines</div>
-        <div class="center" id="nextLine">...</div>
-        <button class="center bigButton" type="button" onclick="manualNext()" id="manualButton">Next Line</button>
-        <div class="center" id="manualTimer">0.000</div>
-    `;
+    document.getElementById("converters").hidden = true;
+    document.getElementById("manualDiv").hidden = false;
     manualStartTime = -1;
     var lyrics = document.getElementById("lyrics").value.trim();
     manualLines = lyrics.replace(/\n\s*\n/g, "\n").split("\n");
@@ -52,7 +46,8 @@ function manualNext() {
         updateManualLines(manualLineNum);
         if (manualLineNum + 1 >= manualLines.length){
             clearInterval(manualTimerInterval);
-            document.getElementById("converters").innerHTML = CONVERTERS_BASE_HTML;
+            document.getElementById("converters").hidden = false;
+            document.getElementById("manualDiv").hidden = true;
         } else if (manualLineNum + 2 >= manualLines.length) {
             document.getElementById("manualButton").innerHTML = "Done"
         }

@@ -32,7 +32,7 @@
         <button type="button" onclick="reset()">Reset</button>
     </div>
     <div id="time" class="center">Current Time: n/a</div>
-    <textarea class="center" id="inputText" rows=70 cols=100>
+    <textarea class="center" id="inputText" rows=50>
 Time: 0, 3000
 Line: 0, 0, 200, 200
 Circle: 100, 100, 50
@@ -47,11 +47,11 @@ Text: &quot;Test&quot;, &quot;30px Arial&quot;, 30, 30</textarea>
     <table class="center"><tr>
     <td>
         <div class="center">
-            Youtube link: <input type="text" id="videoLink" value="https://youtu.be/iKzRIweSBLA">
+            Youtube link: <input type="text" id="videoLink" value="https://youtu.be/5abamRO41fE">
             <button type="button" onclick="changeVideo()">Submit</button>
         </div>
         <div id="video">
-            <iframe class="center" src="https://www.youtube.com/embed/iKzRIweSBLA" allowfullscreen="" width="560" height="315" frameborder="0"></iframe>
+            <iframe class="center" src="https://www.youtube.com/embed/5abamRO41fE" allowfullscreen="" width="560" height="315" frameborder="0"></iframe>
         </div>
         <br>
         <div id="converters">
@@ -59,47 +59,103 @@ Text: &quot;Test&quot;, &quot;30px Arial&quot;, 30, 30</textarea>
             <button class="center bigButton" type="button" onclick="verseBased()">Verse-Based Auto Convert</button>
             <button class="center bigButton" type="button" onclick="manual()">Manual Convert</button>
         </div>
+        <div hidden id="autoDiv">
+            <div class="center">
+                Song Length: <input type="number" id="songLen" min="0">
+                <button type="button" onclick="autoSubmit()">Submit</button>
+            </div>
+        </div>
+        <div hidden id="verseDiv">
+            <textarea id="verse" class="center" rows=15></textarea>
+            <div class="center">
+                Verse Start: <input type="number" id="verseStart" min="0">
+                Verse End: <input type="number" id="verseEnd" min="0"><br>
+            </div>
+            <div class="center">
+                <button type="button" onclick="verseSave(1)">Save</button>
+                <button type="button" onclick="verseChange(-1)">Previous</button>
+                <button type="button" onclick="verseChange(1)">Next</button>
+                <button type="button" onclick="verseDone()">Submit</button>
+            </div>
+        </div>
+        <div hidden id="manualDiv">
+            <div class="center" id="currentLine">Error finding lines</div>
+            <div class="center" id="nextLine">...</div>
+            <button class="center bigButton" type="button" onclick="manualNext()" id="manualButton">Next Line</button>
+            <div class="center" id="manualTimer">0.000</div>
+        </div>
         <div class="center" id="errors"></div>
     </td>
     <td><textarea id="lyrics" rows=50>
-I found a love for me
-Darling just dive right in
-And follow my lead
-Well I found a girl beautiful and sweet
-I never knew you were the someone waiting for me
-'Cause we were just kids when we fell in love
-Not knowing what it was
-I will not give you up this time
-But darling, just kiss me slow, your heart is all I own
-And in your eyes you're holding mine
+I did my time, and I want out
+So effusive fate
+It doesn't cut,
+The soul is not so vibrant
+The reckoning, the sickening
+Back at you, subversion
+Pseudo-sacred with psycho virgin
+Go drill your deserts,
+Go dig your graves
+Then fill your mouth
+With all the money you will save
+Sinking in, getting smaller again
+Undone, it has begun
+I'm not the only one
 
-Baby, I'm dancing in the dark with you between my arms
-Barefoot on the grass, listening to our favorite song
-When you said you looked a mess, I whispered underneath my breath
-But you heard it, darling, you look perfect tonight
+And the rain will kill us all,
+Throw ourselves against the wall
+But no one else can see,
+The preservation of the martyr in me
 
-Well I found a woman, stronger than anyone I know
-She shares my dreams, I hope that someday I'll share her home
-I found a love, to carry more than just my secrets
-To carry love, to carry children of our own
-We are still kids, but we're so in love
-Fighting against all odds
-I know we'll be alright this time
-Darling, just hold my hand
-Be my girl, I'll be your man
-I see my future in your eyes
+Psychosocial, psychosocial, psychosocial
+Psychosocial, psychosocial, psychosocial
 
-Baby, I'm dancing in the dark, with you between my arms
-Barefoot on the grass, listening to our favorite song
-When I saw you in that dress, looking so beautiful
-I don't deserve this, darling, you look perfect tonight
+Oh, there are cracks, in the road we lay
+From where the devil fell
+The secrets have gone mad!
+This is nothing new,
+But would we kill it all?
+Fate was all we had
+Who needs another mess?
+We could start over
+Just look me in the eyes
+And say I'm wrong
+Now there's only emptiness,
+But a message to bring
+I think we're done
+I'm not the only one!
 
-Baby, I'm dancing in the dark, with you between my arms
-Barefoot on the grass, listening to our favorite song
-I have faith in what I see
-Now I know I have met an angel in person
-And she looks perfect
-I don't deserve this
-You look perfect tonight</textarea></td>
+And the rain will kill us all,
+Throw ourselves against the wall
+But no one else can see,
+The preservation of the martyr in me
+
+Psychosocial, psychosocial, psychosocial
+Psychosocial, psychosocial, psychosocial
+
+The limits of the dead,
+The limits of the dead,
+The limits of the dead,
+The limits of the dead,
+
+Fake and defenseless lie,
+I tried to tell you first,
+Your hurtful lies are given out,
+Can't stop the killing idea,
+If it's hunting season,
+Is this what you want?,
+I'm not the only one!
+
+And the rain will kill us all,
+Throw ourselves against the wall
+But no one else can see,
+The preservation of the martyr in me
+And the rain will kill us all,
+Throw ourselves against the wall
+But no one else can see,
+The preservation of the martyr in me
+
+The limits of the dead,
+The limits of the dead</textarea></td>
 </tr></table>
 </body>

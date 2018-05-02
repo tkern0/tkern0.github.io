@@ -1,4 +1,3 @@
-var CONVERTERS_BASE_HTML = "";
 var songLen = 0;
 var verses = [];
 var times = [];
@@ -6,30 +5,17 @@ var verseNum = 0;
 
 function verseBased() {
     var lyrics = document.getElementById("lyrics").value;
-
-    CONVERTERS_BASE_HTML = document.getElementById("converters").innerHTML;
     verses = lyrics.split(/\n\s*\n/);
     verseOutput = [];
     verseNum = 0;
     times = [];
     for (i = 0; i < verses.length; i++) {
-        times[i] = ["", ""]
+        times[i] = [NaN, NaN]
     }
-
-    document.getElementById("converters").innerHTML = `
-        <textarea id="verse" class="center" rows=15></textarea>
-        <div class="center">
-            Verse Start: <input type="number" id="verseStart" min="0">
-            Verse End: <input type="number" id="verseEnd" min="0"><br>
-        </div>
-        <div class="center">
-            <button type="button" onclick="verseSave(1)">Save</button>
-            <button type="button" onclick="verseChange(-1)">Previous</button>
-            <button type="button" onclick="verseChange(1)">Next</button>
-            <button type="button" onclick="verseDone()">Submit</button>
-        </div>
-    `;
     document.getElementById("verse").value = verses[0];
+
+    document.getElementById("converters").hidden = true;
+    document.getElementById("manualDiv").hidden = false;
 }
 
 function verseSave() {
@@ -60,11 +46,13 @@ function verseChange(amount) {
 
 function verseDone() {
     for (i = 0; i < times.length; i++) {
-        /*if (times[i][0] == "" || times[i][1] == "") {
-            document.getElementById("converters").innerHTML = CONVERTERS_BASE_HTML;
-            error("");
+        if (isNaN(times[i][0]) || isNaN(times[i][1])) {
+            if (confirm("Not all verses have times saved, continuing will return to main menu and erase all progress")) {
+                document.getElementById("converters").hidden = false;
+                document.getElementById("manualDiv").hidden = true;
+            }
             return;
-        }*/
+        }
         times[i] = [times[i][0] * 1000, times[i][1] * 1000]
     }
 
@@ -75,6 +63,7 @@ function verseDone() {
     for (j = 0; j < times.length; j++) {
         convertLyrics(verses[j], times[j][0], times[j][1])
     }
-    document.getElementById("converters").innerHTML = CONVERTERS_BASE_HTML;
+    document.getElementById("converters").hidden = false;
+    document.getElementById("manualDiv").hidden = true;
     error("");
 }
