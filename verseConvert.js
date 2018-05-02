@@ -33,7 +33,7 @@ function verseBased() {
 }
 
 function verseSave() {
-    verses[i] = document.getElementById("verse").value
+    verses[verseNum] = document.getElementById("verse").value
     var start = parseInt(document.getElementById("verseStart").value);
     var end = parseInt(document.getElementById("verseEnd").value);
     if (!isNaN(start) && !isNaN(end)) {
@@ -59,13 +59,12 @@ function verseChange(amount) {
 }
 
 function verseDone() {
-    if (times.length < verses.length) {
-        error("Please save times for all verses before continuing");
-        return;
-    }
-    error("");
-
     for (i = 0; i < times.length; i++) {
+        if (times[i][0] == "" || times[i][1] == "") {
+            document.getElementById("converters").innerHTML = CONVERTERS_BASE_HTML;
+            error("");
+            return;
+        }
         times[i] = [times[i][0] * 1000, times[i][1] * 1000]
     }
 
@@ -77,4 +76,5 @@ function verseDone() {
         convertLyrics(verses[j], times[j][0], times[j][1])
     }
     document.getElementById("converters").innerHTML = CONVERTERS_BASE_HTML;
+    error("");
 }

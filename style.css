@@ -11,7 +11,11 @@ button {
     width: 75px;
 }
 
-#inputText{
+textarea {
+    resize: none;
+}
+
+#inputText {
     width: 40%;
 }
 
