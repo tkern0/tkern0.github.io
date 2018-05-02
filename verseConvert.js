@@ -60,11 +60,11 @@ function verseChange(amount) {
 
 function verseDone() {
     for (i = 0; i < times.length; i++) {
-        if (times[i][0] == "" || times[i][1] == "") {
+        /*if (times[i][0] == "" || times[i][1] == "") {
             document.getElementById("converters").innerHTML = CONVERTERS_BASE_HTML;
             error("");
             return;
-        }
+        }*/
         times[i] = [times[i][0] * 1000, times[i][1] * 1000]
     }
 
