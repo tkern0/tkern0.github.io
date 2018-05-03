@@ -1,46 +1,63 @@
-.center {
-    display: table;
-    margin: 0 auto;
-}
-
-#outputCanvas {
-    border: 1px solid black;
-}
-
-button {
-    width: 75px;
-}
-
 textarea {
     resize: none;
     white-space: pre;
-}
-
-#inputText {
-    width: 40%;
-}
-
-table {
-    width: 100%;
-}
-
-td {
-    width: 50%;
-    vertical-align: top;
 }
 
 input[type=number] {
     width: 50px;
 }
 
+.center {
+    display: table;
+    margin: 0 auto;
+}
+
+.left {
+    text-align: left;
+}
+
+.right {
+    text-align: right;
+}
+
+.fullWidth {
+    width: 100%;
+}
+
+.halfWidth {
+    width: 50%;
+}
+
 .bigButton {
-    width: 350px;
+    width: auto;
     height: 50px;
     font-size: 25px;
 }
 
-#verse {
-    width: 560px;
+.wideButton {
+    width: 350px;
+}
+
+#leftSide {
+    vertical-align: top;
+    width: 40%;
+}
+
+#rightSide {
+    vertical-align: top;
+    width: 60%;
+}
+
+#outputCanvas {
+    border: 1px solid black;
+}
+
+#inputText, #lyrics {
+    width: 100%;
+}
+
+#startTimes, #endTimes {
+    overflow-y: hidden;
 }
 
 #currentLine {
@@ -50,8 +67,4 @@ input[type=number] {
 
 #nextLine {
     font-size: 20px;
-}
-
-#lyrics {
-    width: 100%;
 }

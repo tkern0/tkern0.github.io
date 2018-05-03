@@ -2,7 +2,6 @@ var WAIT_MS = 1000/60;
 var currentElements = null;
 var futureElements = null;
 var time = -1;
-var canvas = null;
 var ctx = null;
 var paused = false;
 var started = false;
@@ -29,7 +28,7 @@ if (!!window.chrome && !!window.chrome.webstore) {
    Text: "TEXT", "FONT", x, y
 */
 function parseInput() {
-    var allText = document.getElementById("inputText").value.split("\n");
+    var allText = inputText.value.split("\n");
     var output = [];
 
     var cTimes = [0, -1];
@@ -71,9 +70,13 @@ function start() {
         started = true;
         futureElements = parseInput();
         currentElements = [];
-        canvas = document.getElementById("outputCanvas");
-        ctx = canvas.getContext("2d");
+        ctx = outputCanvas.getContext("2d");
         render = setInterval(draw, WAIT_MS);
+
+        /* This is annoying until we can skip forward in the animation to
+        player.seekTo(0);
+        player.playVideo();
+        */
     }
 }
 
@@ -81,12 +84,12 @@ function pause() {
     if (started) {
         if (paused) {
             render = setInterval(draw, WAIT_MS);
-            document.getElementById("pause").innerHTML = "Pause";
+            pauseButton.innerHTML = "Pause";
             paused = false;
             draw();
         } else {
             clearInterval(render);
-            document.getElementById("pause").innerHTML = "Unpause";
+            pauseButton.innerHTML = "Unpause";
             paused = true;
         }
     }
@@ -100,9 +103,9 @@ function reset() {
         currentElements = null;
         futureElements = null;
         time = -1;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        document.getElementById("time").innerHTML = "Current Time: n/a";
-        document.getElementById("pause").innerHTML = "Pause";
+        ctx.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
+        timer.innerHTML = "Current Time: n/a";
+        pauseButton.innerHTML = "Pause";
     }
 }
 
@@ -113,8 +116,7 @@ function draw() {
         return;
     }
     time += WAIT_MS;
-    var displayTime = "Current Time: " + (time / 1000).toFixed(3);
-    document.getElementById("time").innerHTML =  displayTime;
+    timer.innerHTML = "Current Time: " + (time / 1000).toFixed(3);
 
     var redraw = false;
     /*
@@ -149,7 +151,7 @@ function draw() {
 
     // If nothing's changed no need to redraw
     if (redraw) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
         ctx.fillStyle = colour;
         for (i=0; i<currentElements.length; i++) {
             var type = currentElements[i][2];

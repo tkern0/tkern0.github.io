@@ -3,90 +3,54 @@
 <head>
     <meta charset="utf-8"/>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <script type="text/javascript" src="https://www.youtube.com/iframe_api"></script>
     <script type="text/javascript" src="animate.js"></script>
+    <script type="text/javascript" src="misc.js"></script>
     <script type="text/javascript" src="lyrics.js"></script>
-    <script type="text/javascript" src="verseConvert.js"></script>
-    <script type="text/javascript" src="autoConvert.js"></script>
     <script type="text/javascript" src="manualConvert.js"></script>
-    <script>
-        // Canvases don't scale nicely with css
-        function fixCanvas() {
-            var canvas = document.getElementById("outputCanvas");
-            var w = window.innerWidth * 0.75;
-            var h = w * 9/16;
-            canvas.width = w;
-            canvas.height = h;
-            canvas.style.width = w;
-            canvas.style.height = h;
-        }
-
-        window.onload = fixCanvas;
-        window.onresize = fixCanvas;
-    </script>
 </head>
 <body>
-    <canvas id="outputCanvas" class="center"></canvas>
-    <div class="center">
-        <button type="button" onclick="start()">Start</button>
-        <button type="button" onclick="pause()" id="pause">Pause</button>
-        <button type="button" onclick="reset()">Reset</button>
-    </div>
-    <div id="time" class="center">Current Time: n/a</div>
-    <textarea class="center" id="inputText" rows=50>
-Time: 0, 3000
-Line: 0, 0, 200, 200
-Circle: 100, 100, 50
-
-Time: 0, 5000
-Rect: 200, 300, 400, 500
-
-Time: 1500, 4500
-Text: &quot;Test&quot;, &quot;30px Arial&quot;, 30, 30</textarea>
-    <br><br><br>
-    <h1 class="center">Converters</h1>
     <table class="center"><tr>
-    <td>
+    <td id="leftSide">
+        <canvas id="outputCanvas" class="center"></canvas>
+        <div class="center">
+            <button type="button" onclick="start()">Start</button>
+            <button type="button" onclick="pause()" id="pauseButton">Pause</button>
+            <button type="button" onclick="reset()">Reset</button>
+        </div>
+        <div id="timer" class="center">Current Time: n/a</div>
+        <br>
         <div class="center">
             Youtube link: <input type="text" id="videoLink" value="https://youtu.be/5abamRO41fE">
             <button type="button" onclick="changeVideo()">Submit</button>
         </div>
-        <div id="video">
-            <iframe class="center" src="https://www.youtube.com/embed/5abamRO41fE" allowfullscreen="" width="560" height="315" frameborder="0"></iframe>
+        <div class="center" id="video">
+            <div id="player"></div>
         </div>
-        <br>
-        <div id="converters">
-            <button class="center bigButton" type="button" onclick="autoConvert()">Auto Convert</button>
-            <button class="center bigButton" type="button" onclick="verseBased()">Verse-Based Auto Convert</button>
-            <button class="center bigButton" type="button" onclick="manual()">Manual Convert</button>
+    </td>
+    <td id="rightSide">
+        <div class="right" id="menuBar">
+            <button class="bigButton" type="button" onclick="menuChange('menuAnimation')">Animation Info</button>
+            <button class="bigButton" type="button" onclick="menuChange('menuLyrics'); lyricsSetup()">Lyrics</button>
+            <button class="bigButton" type="button" onclick="menuChange('menuManual'); manualSetup()">Manual Timing</button>
         </div>
-        <div hidden id="autoDiv">
-            <div class="center">
-                Song Length: <input type="number" id="songLen" min="0">
-                <button type="button" onclick="autoSubmit()">Submit</button>
-            </div>
+        <div id="menuAnimation">
+            <textarea class="center" id="inputText" rows=50></textarea>
         </div>
-        <div hidden id="verseDiv">
-            <textarea id="verse" class="center" rows=15></textarea>
-            <div class="center">
-                Verse Start: <input type="number" id="verseStart" min="0">
-                Verse End: <input type="number" id="verseEnd" min="0"><br>
-            </div>
-            <div class="center">
-                <button type="button" onclick="verseSave(1)">Save</button>
-                <button type="button" onclick="verseChange(-1)">Previous</button>
-                <button type="button" onclick="verseChange(1)">Next</button>
-                <button type="button" onclick="verseDone()">Submit</button>
-            </div>
-        </div>
-        <div hidden id="manualDiv">
+        <div hidden id="menuManual">
             <div class="center" id="currentLine">Error finding lines</div>
             <div class="center" id="nextLine">...</div>
-            <button class="center bigButton" type="button" onclick="manualNext()" id="manualButton">Next Line</button>
+            <button class="center bigButton wideButton" type="button" onclick="manualNext()" id="manualButton">Start</button>
             <div class="center" id="manualTimer">0.000</div>
         </div>
-        <div class="center" id="errors"></div>
-    </td>
-    <td><textarea id="lyrics" rows=50>
+        <div hidden id="menuLyrics">
+            <!-- fix later
+            <table><tr><td class="fullWidth">Start Time</td>
+            <td class="right halfWidth">End Time</td></tr></table>
+            -->
+            <table><tr>
+            <td><textarea id="startTimes" rows=50 cols=3></textarea></td>
+            <td class="fullWidth"><textarea id="lyrics" rows=50>
 I did my time, and I want out
 So effusive fate
 It doesn't cut
@@ -157,5 +121,11 @@ The preservation of the martyr in me
 
 The limits of the dead
 The limits of the dead</textarea></td>
-</tr></table>
+            <td><textarea id="endTimes" rows=50 cols=3></textarea></td>
+            </tr></table>
+            <button class="center bigButton wideButton" type="button" onclick="convertLyrics()">Convert</button>
+            <div class="center" id="error"></div>
+        </div>
+    </td>
+    </tr></table>
 </body>
