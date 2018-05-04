@@ -12,20 +12,21 @@
 <body>
     <table class="center"><tr>
     <td id="leftSide">
-        <canvas id="outputCanvas" class="center"></canvas>
-        <div class="center">
-            <button type="button" onclick="start()">Start</button>
-            <button type="button" onclick="pause()" id="pauseButton">Pause</button>
-            <button type="button" onclick="reset()">Reset</button>
+        <canvas class="center" id="outputCanvas"></canvas>
+        <input class="fullWidth" id="timeSlider" type="range" min="0" max="100" value="0">
+        <div class="center" id="playerButtons">
+            <button onclick="togglePlaying()" id="playButton">Play</button>
+            <button onclick="load()">Load</button>
+            <input type="checkbox" id="syncPlayer" checked>Sync with Youtube video<br>
+            <span class="right" id="timer">0.000/0.000</span>
         </div>
-        <div id="timer" class="center">Current Time: n/a</div>
         <br>
         <div class="center">
             Youtube link: <input type="text" id="videoLink" value="https://youtu.be/5abamRO41fE">
             <button type="button" onclick="changeVideo()">Submit</button>
         </div>
         <div class="center" id="video">
-            <div id="player"></div>
+            <div id="player" class="center">No video currently loaded</div>
         </div>
     </td>
     <td id="rightSide">
@@ -35,7 +36,7 @@
             <button class="bigButton" type="button" onclick="menuChange('menuManual'); manualSetup()">Manual Timing</button>
         </div>
         <div id="menuAnimation">
-            <textarea class="center" id="inputText" rows=50></textarea>
+            <textarea class="center fullWidth" id="inputText" rows=50></textarea>
         </div>
         <div hidden id="menuManual">
             <div class="center" id="currentLine">Error finding lines</div>
@@ -44,13 +45,12 @@
             <div class="center" id="manualTimer">0.000</div>
         </div>
         <div hidden id="menuLyrics">
-            <!-- fix later
-            <table><tr><td class="fullWidth">Start Time</td>
-            <td class="right halfWidth">End Time</td></tr></table>
-            -->
+            <table class="fullWidth"><tr><td>Start Time</td>
+            <td align="center">All times in seconds</td>
+            <td align="right">End Time</td></tr></table>
             <table><tr>
             <td><textarea id="startTimes" rows=50 cols=3></textarea></td>
-            <td class="fullWidth"><textarea id="lyrics" rows=50>
+            <td class="fullWidth"><textarea id="lyrics" class="fullWidth" rows=50>
 I did my time, and I want out
 So effusive fate
 It doesn't cut
@@ -123,6 +123,10 @@ The limits of the dead
 The limits of the dead</textarea></td>
             <td><textarea id="endTimes" rows=50 cols=3></textarea></td>
             </tr></table>
+            <table class="fullWidth"><tr><td id="startLines">??? Lines</td>
+            <td align="center" id="lyricLines">??? Lines</td>
+            <td align="right" id="endLines">??? Lines</td></tr></table>
+            <button class="left absolute" type="button" onclick="lyricTimes()">Reset Times</button>
             <button class="center bigButton wideButton" type="button" onclick="convertLyrics()">Convert</button>
             <div class="center" id="error"></div>
         </div>

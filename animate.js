@@ -1,12 +1,4 @@
 var WAIT_MS = 1000/60;
-var currentElements = null;
-var futureElements = null;
-var time = -1;
-var ctx = null;
-var paused = false;
-var started = false;
-var render = null;
-// I'd change this based on the audio if you can get that working
 var colour = "#000000";
 
 // Chrome can't wait decimal ms and rounds down so the animation runs fast
@@ -27,11 +19,14 @@ if (!!window.chrome && !!window.chrome.webstore) {
    Circle: x, y, r
    Text: "TEXT", "FONT", x, y
 */
+var maxTime = 0;
 function parseInput() {
     var allText = inputText.value.split("\n");
     var output = [];
+    maxTime = 0;
 
-    var cTimes = [0, -1];
+    var start = 0;
+    var end = -1;
     // This makes it really easy to add new elements
     var allRegexes = [/(rect): ?(\d*?), ?(\d*?), ?(\d*?), ?(\d*?)$/im,
                       /(line): ?(\d*?), ?(\d*?), ?(\d*?), ?(\d*?)$/im,
@@ -46,85 +41,125 @@ function parseInput() {
               We need to explicitly convert these two because otherwise we
                will end up comparing strings when we try to sort
             */
-            cTimes = [parseInt(match[1]), parseInt(match[2])];
+            start = parseInt(match[1]);
+            end = parseInt(match[2]);
+            if (end > maxTime) {
+                maxTime = end;
+            }
             continue;
         }
         // Checks all regexes for a match, saves to output if it gets one
         for (j = 0; j < allRegexes.length; j++) {
             var match = line.match(allRegexes[j]);
             if (match) {
-                var object = cTimes.concat(match[1].toLowerCase());
-                object = object.concat(match.slice(2));
+                var object = {start: start,
+                              end: end,
+                              type: match[1].toLowerCase(),
+                              params: match.slice(2)}
                 output.push(object);
                 continue;
             }
         }
     }
     // Sort output by the start time of each object
-    output.sort(function(a, b) {return (a[0] > b[0]) ? 1 : -1;});
+    output.sort(function(a, b) {return (a.start > b.start) ? 1 : -1;});
     return output;
 }
 
-function start() {
-    if (!started) {
-        started = true;
-        futureElements = parseInput();
-        currentElements = [];
-        ctx = outputCanvas.getContext("2d");
-        render = setInterval(draw, WAIT_MS);
-
-        /* This is annoying until we can skip forward in the animation to
-        player.seekTo(0);
-        player.playVideo();
-        */
-    }
+var time = 0;
+var ctx = null;
+var elements = null;
+function load() {
+    pause();
+    elements = parseInput();
+    ctx = outputCanvas.getContext("2d");
+    time = 0;
+    drawTime();
+    timeSlider.max = maxTime;
 }
 
-function pause() {
-    if (started) {
+function drawTime() {
+    timer.innerHTML = (time / 1000).toFixed(3) + "/" + (maxTime / 1000).toFixed(3);
+}
+
+function timeChange(release) {
+    pause();
+    time = parseInt(timeSlider.value);
+    if (syncPlayer.checked) {
+        player.pauseVideo();
+        player.seekTo(time / 1000, release);
+    }
+    drawTime();
+    timeJumpFix();
+    draw(true);
+}
+
+// TODO: Fix scrolling, make it step like 0.25s rather than 0.001
+
+function togglePlaying() {
+    if (elements) {
         if (paused) {
-            render = setInterval(draw, WAIT_MS);
-            pauseButton.innerHTML = "Pause";
-            paused = false;
-            draw();
+            play();
         } else {
-            clearInterval(render);
-            pauseButton.innerHTML = "Unpause";
-            paused = true;
+            pause();
+        }
+    }
+}
+var paused = true;
+var render = null;
+function pause() {
+    clearInterval(render);
+    if (syncPlayer.checked) {
+        player.pauseVideo();
+    }
+    playButton.innerHTML = "Play";
+    paused = true;
+}
+
+function play() {
+    timeJumpFix();
+    draw(true);
+    render = setInterval(draw, WAIT_MS);
+    if (syncPlayer.checked) {
+        player.playVideo();
+    }
+    playButton.innerHTML = "Pause";
+    paused = false;
+}
+
+var futureElements = [];
+var currentElements = [];
+function timeJumpFix() {
+    futureElements = [];
+    currentElements = [];
+    for (var i=0; i<elements.length; i++) {
+        if (elements[i].start <= time) {
+            if (elements[i].end > time) {
+                currentElements.push(elements[i]);
+            }
+        } else {
+            futureElements.push(elements[i]);
         }
     }
 }
 
-function reset() {
-    if (started) {
-        clearInterval(render);
-        started = false;
-        paused = false;
-        currentElements = null;
-        futureElements = null;
-        time = -1;
-        ctx.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
-        timer.innerHTML = "Current Time: n/a";
-        pauseButton.innerHTML = "Pause";
-    }
-}
-
-function draw() {
+function draw(forceRedraw=false) {
     if (futureElements != null && currentElements != null &&
         futureElements.length == 0 && currentElements.length == 0) {
-        reset();
+        pause();
         return;
     }
     time += WAIT_MS;
-    timer.innerHTML = "Current Time: " + (time / 1000).toFixed(3);
+    timeSlider.value = time;
+    drawTime();
 
-    var redraw = false;
+    var redraw = forceRedraw;
     /*
       Check for new elements to draw
       Because this list is sorted, once it fails once we know there won't
        be any more we need to add
     */
-    while (futureElements.length > 0 && time >= futureElements[0][0]) {
+    while (futureElements.length > 0 && time >= futureElements[0].start) {
         currentElements.push(futureElements.shift());
         redraw = true;
     }
@@ -134,9 +169,9 @@ function draw() {
            end is before start, at the end
         */
         currentElements.sort(function(a, b) {
-            if (a[0] > a[1]) {return 1;}
-            if (b[0] > b[1]) {return -1;}
-            return (a[1] > b[1]) ? 1 : -1;
+            if (a.start > a.end) {return 1;}
+            if (b.start > b.end) {return -1;}
+            return (a.end > b.end) ? 1 : -1;
         })
     }
     /*
@@ -144,7 +179,7 @@ function draw() {
       Again because it's sorted we only need this to fail once to know that
        we're done
     */
-    while (currentElements.length > 0 && time >= currentElements[0][1]) {
+    while (currentElements.length > 0 && time >= currentElements[0].end) {
         currentElements.shift();
         redraw = true;
     }
@@ -154,8 +189,8 @@ function draw() {
         ctx.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
         ctx.fillStyle = colour;
         for (i=0; i<currentElements.length; i++) {
-            var type = currentElements[i][2];
-            var params = currentElements[i].slice(3);
+            var type = currentElements[i].type;
+            var params = currentElements[i].params;
 
             switch (type) {
                 case "rect":

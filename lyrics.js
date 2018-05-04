@@ -4,31 +4,42 @@ var MIN_FONT = 10;
 var GAP_MS = 50;
 
 // Makes scrolling in the main lyrics box also scroll the time ones
-function autoScroll(){
+function autoScroll() {
     var pos = lyrics.scrollTop;
     startTimes.scrollTop = pos;
     endTimes.scrollTop = pos;
 }
 
-// Really just to try get defualt times for the lyrics
-var savedID = "";
+function fixLineCount() {
+    startLines.innerHTML = startTimes.value.split(/\n/g).length + " lines";
+    lyricLines.innerHTML = lyrics.value.split(/\n/g).length + " lines";
+    endLines.innerHTML = endTimes.value.split(/\n/g).length + " lines";
+}
+
+// Only want to 'reset' times the first time you switch tabs
+var initalSetup = true;
 function lyricsSetup() {
-    // If the video's hasn't changed no need to do anything
-    if (savedID != videoID) {
-        savedID = videoID;
-        var lines = lyrics.value.split(/\n/g).length;
-        var start = [];
-        var end = [];
-        for (var i=0; i<lines; i++) {
-            start[i] = ""
-            end[i] = ""
-        }
-        start[0] = 0
-        end[lines - 1] = videoLength;
-        startTimes.value = start.join("\n");
-        endTimes.value = end.join("\n");
+    error.innerHTML = ''
+    if (initalSetup) {
+        initalSetup = false;
+        lyricTimes();
+        fixLineCount();
     }
-    error.innerHTML = "";
+}
+
+// Gets default times for the lyrics
+function lyricTimes() {
+    var lines = lyrics.value.split(/\n/g).length;
+    var start = [];
+    var end = [];
+    for (var i=0; i<lines; i++) {
+        start[i] = ""
+        end[i] = ""
+    }
+    start[0] = 0
+    end[lines - 1] = videoLength;
+    startTimes.value = start.join("\n");
+    endTimes.value = end.join("\n");
 }
 
 // Using the provided start and end times try guess the timing of each line
@@ -58,7 +69,7 @@ function convertLyrics() {
             if (currentGroup.start >= 0 && currentGroup.end < 0) {
                 currentGroup.end = start;
                 // Sometimes gets here with just newlines, no need to continue
-                if (!currentGroup.lines.match(/^\n*$/)) {
+                if (!currentGroup.lines.match(/^\s*$/)) {
                     lineGroups.push(currentGroup);
                 }
             }
@@ -77,7 +88,7 @@ function convertLyrics() {
         */
         if (!isNaN(end)) {
             currentGroup.end = end;
-            if (!currentGroup.lines.match(/^\n*$/)) {
+            if (!currentGroup.lines.match(/^\s*$/)) {
                 lineGroups.push(currentGroup);
             }
             currentGroup = {start: end, end: -1, lines: ""};
@@ -125,7 +136,7 @@ function fitLine(str, fontSize = FONT_SIZE, font = FONT) {
 }
 
 function countWords(str) {
-    return str.trim().split(/\s+/).length;
+    return str.trim().split(/[(\s-]+/).length;
 }
 
 /*
@@ -135,8 +146,8 @@ function countWords(str) {
 function convertText(text, startTime, endTime) {
     var songLen = endTime - startTime;
     var currentTime = startTime;
-    // Big gaps of whilespace become a single line
-    text = text.replace(/\n\s*\n/g, "\n")
+    // Kill leading/trailing whitespace and make big gaps become a single line
+    text = text.replace(/^\s*/, "").replace(/\s*$/, "").replace(/\n\s*\n/g, "\n")
 
     var x = 0;
     var y = 0;

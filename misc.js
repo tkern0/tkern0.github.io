@@ -20,12 +20,15 @@ var lyrics          = null;
 var startTimes      = null;
 var endTimes        = null;
 var error           = null;
-var pauseButton     = null;
+var playButton      = null;
 var timer           = null;
 var manualTimer     = null;
 var manualButton    = null;
 var currentLine     = null;
 var nextLine        = null;
+var menuAnimation   = null;
+var timeSlider      = null;
+var syncPlayer      = null;
 var currentMenu     = null;
 window.addEventListener("load", function() {
     fixCanvas();
@@ -36,15 +39,29 @@ window.addEventListener("load", function() {
     startTimes      = document.getElementById("startTimes");
     endTimes        = document.getElementById("endTimes");
     error           = document.getElementById("error");
-    pauseButton     = document.getElementById("pauseButton");
+    playButton      = document.getElementById("playButton");
     timer           = document.getElementById("timer");
     manualTimer     = document.getElementById("manualTimer");
     manualButton    = document.getElementById("manualButton");
     currentLine     = document.getElementById("currentLine");
     nextLine        = document.getElementById("nextLine");
-    currentMenu     = document.getElementById("menuAnimation");
+    menuAnimation   = document.getElementById("menuAnimation");
+    startLines      = document.getElementById("startLines");
+    lyricLines      = document.getElementById("lyricLines");
+    endLines        = document.getElementById("endLines");
+    timeSlider      = document.getElementById("timeSlider");
+    syncPlayer      = document.getElementById("syncPlayer");
+
+    currentMenu = menuAnimation;
 
     lyrics.addEventListener("scroll", autoScroll);
+
+    startTimes.addEventListener("keyup", fixLineCount);
+    lyrics.addEventListener("keyup", fixLineCount);
+    endTimes.addEventListener("keyup", fixLineCount);
+
+    timeSlider.addEventListener("input", timeChange);
+    timeSlider.addEventListener("mouseup", function() {timeChange(true);});
 });
 window.addEventListener("resize", fixCanvas);
 
@@ -98,9 +115,9 @@ var videoID = "5abamRO41fE"
 function changeVideo() {
     var url = document.getElementById("videoLink").value
     var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
-    var match = url.match(regExp);w
+    var match = url.match(regExp);
     videoID = (match && match[7].length == 11)? match[7] : "";
     // This div gets deleted by the yt api
-    document.getElementById("video").innerHTML = `<div id="player"></div>`
+    document.getElementById("video").innerHTML = `<div id="player" class="center">No video currently loaded</div>`
     onYouTubeIframeAPIReady(videoID);
 }

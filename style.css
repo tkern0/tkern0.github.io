@@ -20,6 +20,10 @@ input[type=number] {
     text-align: right;
 }
 
+.absolute {
+    position: absolute;
+}
+
 .fullWidth {
     width: 100%;
 }
@@ -52,10 +56,6 @@ input[type=number] {
     border: 1px solid black;
 }
 
-#inputText, #lyrics {
-    width: 100%;
-}
-
 #startTimes, #endTimes {
     overflow-y: hidden;
 }
@@ -67,4 +67,41 @@ input[type=number] {
 
 #nextLine {
     font-size: 20px;
+}
+
+/*
+  Based heavily on:
+  https://www.w3schools.com/howto/howto_js_rangeslider.asp
+*/
+#timeSlider {
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    width: 97.5%; /* Full-width */
+    height: 15px;
+    border-radius: 5px;
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+#timeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 15px; /* Set a specific slider handle width */
+    height: 15px;
+    border-radius: 50%;
+    cursor: pointer; /* Cursor on hover */
+}
+
+#timeSlider::-moz-range-thumb {
+    width: 15px; /* Set a specific slider handle width */
+    height: 15px;
+    border-radius: 50%;
+    cursor: pointer; /* Cursor on hover */
+}
+
+#playerButtons {
+    width: 95%;
+}
+
+#timer {
+    float: inline-end;
 }
