@@ -1,5 +1,4 @@
 var WAIT_MS = 1000/60;
-var colour = "#000000";
 
 // Chrome can't wait decimal ms and rounds down so the animation runs fast
 if (!!window.chrome && !!window.chrome.webstore) {
@@ -28,10 +27,12 @@ function parseInput() {
     var start = 0;
     var end = -1;
     // This makes it really easy to add new elements
-    var allRegexes = [/(rect): ?(\d*?), ?(\d*?), ?(\d*?), ?(\d*?)$/im,
-                      /(line): ?(\d*?), ?(\d*?), ?(\d*?), ?(\d*?)$/im,
-                      /(circle): ?(\d*?), ?(\d*?), ?(\d*?)$/im,
-                      /(text): ?"(.*?)", ?"(.*?)", ?(\d*?), ?(\d*?)$/im];
+    var allRegexes = [/^(rect): ?(\d*?), ?(\d*?), ?(\d*?), ?(\d*?), ?(#[0-9a-f]{6})$/im,
+                      /^(rectfull): ?(\d*?), ?(\d*?), ?(\d*?), ?(\d*?), ?(#[0-9a-f]{6})$/im,
+                      /^(line): ?(\d*?), ?(\d*?), ?(\d*?), ?(\d*?), ?(#[0-9a-f]{6})$/im,
+                      /^(circle): ?(\d*?), ?(\d*?), ?(\d*?), ?(#[0-9a-f]{6})$/im,
+                      /^(circlefull): ?(\d*?), ?(\d*?), ?(\d*?), ?(#[0-9a-f]{6})$/im,
+                      /^(text): ?"(.*?)", ?"(.*?)", ?(\d*?), ?(\d*?), ?(#[0-9a-f]{6})$/im];
     for (i = 0; i < allText.length; i++) {
         var line = allText[i].trim();
         // Time works a bit differently to the others so it's seperate
@@ -52,10 +53,12 @@ function parseInput() {
         for (j = 0; j < allRegexes.length; j++) {
             var match = line.match(allRegexes[j]);
             if (match) {
+                var colourIndex = match.length - 1;
                 var object = {start: start,
                               end: end,
                               type: match[1].toLowerCase(),
-                              params: match.slice(2)}
+                              colour: match[colourIndex],
+                              params: match.slice(2, colourIndex)}
                 output.push(object);
                 continue;
             }
@@ -71,8 +74,10 @@ var ctx = null;
 var elements = null;
 function load() {
     pause();
+    if (syncPlayer.checked) {
+        player.pauseVideo();
+    }
     elements = parseInput();
-    ctx = outputCanvas.getContext("2d");
     time = 0;
     drawTime();
     timeSlider.max = maxTime;
@@ -143,15 +148,19 @@ function timeJumpFix() {
     }
 }
 
-function draw(forceRedraw=false) {
+var colour = "#000000";
+function draw(forceRedraw=false, advance=true) {
     if (futureElements != null && currentElements != null &&
         futureElements.length == 0 && currentElements.length == 0) {
         pause();
         return;
     }
-    time += WAIT_MS;
-    timeSlider.value = time;
-    drawTime();
+
+    if (advance) {
+        time += WAIT_MS;
+        timeSlider.value = time;
+        drawTime();
+    }
 
     var redraw = forceRedraw;
     /*
@@ -187,13 +196,23 @@ function draw(forceRedraw=false) {
     // If nothing's changed no need to redraw
     if (redraw) {
         ctx.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
-        ctx.fillStyle = colour;
         for (i=0; i<currentElements.length; i++) {
             var type = currentElements[i].type;
             var params = currentElements[i].params;
-
+            ctx.fillStyle = currentElements[i].colour;
+            ctx.strokeStyle = currentElements[i].colour;
             switch (type) {
                 case "rect":
+                    ctx.beginPath();
+                    ctx.moveTo(params[0], params[1]);
+                    ctx.lineTo(params[0], params[3]);
+                    ctx.lineTo(params[2], params[3]);
+                    ctx.lineTo(params[2], params[1]);
+                    ctx.lineTo(params[0], params[1]);
+                    ctx.stroke();
+                    break;
+
+                case "rectfull":
                     ctx.beginPath();
                     ctx.fillRect(params[0], params[1], params[2], params[3]);
                     break;
@@ -209,6 +228,13 @@ function draw(forceRedraw=false) {
                     ctx.beginPath();
                     ctx.arc(params[0], params[1], params[2], 0, 2*Math.PI);
                     ctx.stroke();
+                    break;
+
+                case "circlefull":
+                    ctx.beginPath();
+                    ctx.arc(params[0], params[1], params[2], 0, 2*Math.PI);
+                    ctx.stroke();
+                    ctx.fill();
                     break;
 
                 case "text":

@@ -14,6 +14,7 @@ function fixCanvas() {
   You need to wait for load to be able to initialize them, figure it's best to
    do them all at once
 */
+var currentMenu     = null;
 var outputCanvas    = null;
 var inputText       = null;
 var lyrics          = null;
@@ -29,10 +30,27 @@ var nextLine        = null;
 var menuAnimation   = null;
 var timeSlider      = null;
 var syncPlayer      = null;
-var currentMenu     = null;
+var drawOptions     = null;
+var drawColour      = null;
+var drawPoint1      = null;
+var drawPoint2      = null;
+var drawRadius      = null;
+var drawText        = null;
+var drawError       = null;
+var drawColour      = null;
+var drawStartTime   = null;
+var drawEndTime     = null;
+var drawX1          = null;
+var drawY1          = null;
+var drawSelect1     = null;
+var drawX2          = null;
+var drawY2          = null;
+var drawSelect2     = null;
+var drawRadius      = null;
+var drawString      = null;
+var drawFont        = null;
+var drawRadiusValue = null;
 window.addEventListener("load", function() {
-    fixCanvas();
-
     outputCanvas    = document.getElementById("outputCanvas");
     inputText       = document.getElementById("inputText");
     lyrics          = document.getElementById("lyrics");
@@ -51,8 +69,33 @@ window.addEventListener("load", function() {
     endLines        = document.getElementById("endLines");
     timeSlider      = document.getElementById("timeSlider");
     syncPlayer      = document.getElementById("syncPlayer");
+    drawOptions     = document.getElementById("drawOptions");
+    drawColour      = document.getElementById("drawColour");
+    drawPoint1      = document.getElementById("drawPoint1");
+    drawPoint2      = document.getElementById("drawPoint2");
+    drawRadius      = document.getElementById("drawRadius");
+    drawText        = document.getElementById("drawText");
+    drawError       = document.getElementById("drawError");
+    drawColour      = document.getElementById("drawColour");
+    drawStartTime   = document.getElementById("drawStartTime");
+    drawEndTime     = document.getElementById("drawEndTime");
+    drawX1          = document.getElementById("drawX1");
+    drawY1          = document.getElementById("drawY1");
+    drawSelect1     = document.getElementById("drawSelect1");
+    drawX2          = document.getElementById("drawX2");
+    drawY2          = document.getElementById("drawY2");
+    drawSelect2     = document.getElementById("drawSelect2");
+    drawRadius      = document.getElementById("drawRadius");
+    drawString      = document.getElementById("drawString");
+    drawFont        = document.getElementById("drawFont");
+    drawRadiusValue = document.getElementById("drawRadiusValue");
 
     currentMenu = menuAnimation;
+    ctx = outputCanvas.getContext("2d");
+
+    fixCanvas();
+    drawChange();
+    drawFixPointLimits();
 
     lyrics.addEventListener("scroll", autoScroll);
 
@@ -62,15 +105,12 @@ window.addEventListener("load", function() {
 
     timeSlider.addEventListener("input", timeChange);
     timeSlider.addEventListener("mouseup", function() {timeChange(true);});
-});
-window.addEventListener("resize", fixCanvas);
 
-var outputCanvas = null;
-var inputText = null;
-var lyrics = null;
-var startTimes = null;
-var endTimes = null;
-var error = null;
+    drawOptions.addEventListener("change", drawChange);
+
+    window.addEventListener("resize", fixCanvas);
+    window.addEventListener("resize", drawFixPointLimits);
+});
 
 
 // Deals with changing menus

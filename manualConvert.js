@@ -38,7 +38,7 @@ function manualNext() {
         inputText.value += "Time: " + Math.round(manualStartTime) + ", "
                         + Math.round(manualCurrentTime - REACTION_MS) + "\n"
                         + "Text: \"" + line + "\", \"" + currentFont + "\", "
-                        + x + ", " + y + "\n";
+                        + x + ", " + y + ", #000000\n";
 
         manualStartTime = manualCurrentTime - 100
 

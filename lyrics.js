@@ -171,9 +171,9 @@ function convertText(text, startTime, endTime) {
         [x, y, currentFont] = fitLine(line);
 
         // I really wish there was a proper format(), this looks messy as hell
-        inputText.value += "Time: " + currentTime + ", "
-                        + (currentTime + lineMS) + "\n" + "Text: \"" + line
-                        + "\", \"" + currentFont + "\", " + x + ", " + y + "\n";
+        inputText.value += "Time: " + currentTime + ", " + (currentTime
+                        + lineMS) + "\n" + "Text: \"" + line + "\", \""
+                        + currentFont + "\", " + x + ", " + y + ", #000000\n";
 
         currentTime += lineMS + GAP_MS;
     }

@@ -8,12 +8,13 @@
     <script type="text/javascript" src="misc.js"></script>
     <script type="text/javascript" src="lyrics.js"></script>
     <script type="text/javascript" src="manualConvert.js"></script>
+    <script type="text/javascript" src="draw.js"></script>
 </head>
 <body>
     <table class="center"><tr>
     <td id="leftSide">
         <canvas class="center" id="outputCanvas"></canvas>
-        <input class="fullWidth" id="timeSlider" type="range" min="0" max="100" value="0">
+        <input id="timeSlider" type="range" min="0" max="100" value="0">
         <div class="center" id="playerButtons">
             <button onclick="togglePlaying()" id="playButton">Play</button>
             <button onclick="load()">Load</button>
@@ -23,7 +24,7 @@
         <br>
         <div class="center">
             Youtube link: <input type="text" id="videoLink" value="https://youtu.be/5abamRO41fE">
-            <button type="button" onclick="changeVideo()">Submit</button>
+            <button onclick="changeVideo()">Submit</button>
         </div>
         <div class="center" id="video">
             <div id="player" class="center">No video currently loaded</div>
@@ -31,9 +32,10 @@
     </td>
     <td id="rightSide">
         <div class="right" id="menuBar">
-            <button class="bigButton" type="button" onclick="menuChange('menuAnimation')">Animation Info</button>
-            <button class="bigButton" type="button" onclick="menuChange('menuLyrics'); lyricsSetup()">Lyrics</button>
-            <button class="bigButton" type="button" onclick="menuChange('menuManual'); manualSetup()">Manual Timing</button>
+            <button class="bigButton" onclick="menuChange('menuAnimation')">Animation Info</button>
+            <button class="bigButton" onclick="menuChange('menuDraw'); drawChange()">Draw</button>
+            <button class="bigButton" onclick="menuChange('menuLyrics'); lyricsSetup()">Lyrics</button>
+            <button class="bigButton" onclick="menuChange('menuManual'); manualSetup()">Manual Timing</button>
         </div>
         <div id="menuAnimation">
             <textarea class="center fullWidth" id="inputText" rows=50></textarea>
@@ -41,7 +43,7 @@
         <div hidden id="menuManual">
             <div class="center" id="currentLine">Error finding lines</div>
             <div class="center" id="nextLine">...</div>
-            <button class="center bigButton wideButton" type="button" onclick="manualNext()" id="manualButton">Start</button>
+            <button class="center bigButton wideButton" onclick="manualNext()" id="manualButton">Start</button>
             <div class="center" id="manualTimer">0.000</div>
         </div>
         <div hidden id="menuLyrics">
@@ -126,9 +128,69 @@ The limits of the dead</textarea></td>
             <table class="fullWidth"><tr><td id="startLines">??? Lines</td>
             <td align="center" id="lyricLines">??? Lines</td>
             <td align="right" id="endLines">??? Lines</td></tr></table>
-            <button class="left absolute" type="button" onclick="lyricTimes()">Reset Times</button>
-            <button class="center bigButton wideButton" type="button" onclick="convertLyrics()">Convert</button>
+            <button class="left absolute" onclick="lyricTimes()">Reset Times</button>
+            <button class="center bigButton wideButton" onclick="convertLyrics()">Convert</button>
             <div class="center" id="error"></div>
+        </div>
+        <div id="menuDraw" hidden>
+            <br>
+            <select class="center bigButton wideButton" id="drawOptions">
+                <option value="rect">Rectangle</option>
+                <option value="rectFull">Filled Rectangle</option>
+                <option value="line">Line</option>
+                <option value="circle">Circle</option>
+                <option value="circleFull">Filled Circle</option>
+                <option value="text">Text</option>
+            </select>
+            <div class="center">
+                <span id="selectColourText">Select Colour:&nbsp;</span>
+                <input type="color" id="drawColour">
+            </div>
+            <span class="center">Time (seconds):</span>
+            <table class="center"><tr>
+                <td>Start: <input id="drawStartTime" type="number" step=0.001 value="0"></td>
+                <td>End: <input id="drawEndTime" type="number" step=0.001 value="0"></td>
+            </tr><tr>
+                <td><button class="center" onclick="drawCurrent(true)" id="drawCurrentStart">Current</button></td>
+                <td><button class="center" onclick="drawCurrent(false)" id="drawCurrentEnd">Current</button></td>
+            </tr></table>
+            </div>
+            <div class="center">
+                Point 1:
+                <input id="drawX1" type="number" value="0" min="0">
+                <input id="drawY1" type="number" value="0" min="0">
+                <button onclick="drawSelectToggle(true)" id="drawSelect1">Select on Canvas</button>
+            </div>
+            <div id="drawPoint2" hidden>
+                <!--For some reason centering ignores the hidden tag-->
+                <div class="center">
+                    Point 2:
+                    <input id="drawX2" type="number" value="0" min="0">
+                    <input id="drawY2" type="number" value="0" min="0">
+                    <button onclick="drawSelectToggle(false)" id="drawSelect2">Select on Canvas</button>
+                </div>
+            </div>
+            <div id="drawRadius" hidden>
+                <div class="center">
+                    Radius:
+                    <input id="drawRadiusValue" type="number" value="0">
+                </div>
+            </div>
+            <div id="drawText" hidden>
+                <table class="center"><tr>
+                    <td>String:</td>
+                    <td><input id="drawString" value="Example String"></td>
+                </tr><tr>
+                    <td>Font:</td>
+                    <td><input id="drawFont" value="25px Arial"></td>
+                </tr></table>
+            </div>
+            <div id="drawError">
+                <h1 class="center">Could not find correct sub-menu</h1>
+            </div>
+            <br>
+            <button class="center" onclick="drawPreview()">Preview</button>
+            <button class="center bigButton wideButton" onclick="drawSubmit()" id="drawSubmit">Submit</button>
         </div>
     </td>
     </tr></table>
