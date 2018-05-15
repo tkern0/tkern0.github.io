@@ -11,7 +11,7 @@ function manualSetup() {
     manualStartTime = -1;
     manualCurrentTime = -1;
 
-    manualTimer.innerHTML = "0.000";
+    manualTimer.innerHTML = "Current Time: 0.000";
     manualButton.innerHTML = "Start";
 
     updateManualLines(0);
@@ -35,27 +35,32 @@ function manualNext() {
         var currentFont = "";
         [x, y, currentFont] = fitLine(line);
 
-        inputText.value += "Time: " + Math.round(manualStartTime) + ", "
-                        + Math.round(manualCurrentTime - REACTION_MS) + "\n"
-                        + "Text: \"" + line + "\", \"" + currentFont + "\", "
-                        + x + ", " + y + ", #000000\n";
+        inputText.value += "Time: " + Math.round(manualStartTime)
+                        + ", " + Math.round(manualCurrentTime - REACTION_MS)
+                        + "\n" + "Text: 0, #000000, \"" + line + "\", \""
+                        + currentFont + "\", " + x + ", " + y + "\n";
 
         manualStartTime = manualCurrentTime - 100
 
         manualLineNum++;
         updateManualLines(manualLineNum);
-        if (manualLineNum + 1 >= manualLines.length){
+        if (manualLineNum >= manualLines.length){
             clearInterval(runningIntervals.manual);
-        } else if (manualLineNum + 2 >= manualLines.length) {
-            manualButton.innerHTML = "Done"
+            manualButton.innerHTML = "Start";
+            manualTimer.innerHTML = "Current Time: 0.000";
+        } else if (manualLineNum + 1 >= manualLines.length) {
+            manualButton.innerHTML = "Done";
         }
     }
 }
 
 function updateManualLines(i) {
+    if (i == manualLines.length) {
+        i = 0;
+    }
     currentLine.innerHTML = manualLines[i];
-    if (manualLineNum + 2 >= manualLines.length) {
-        nextLine.innerHTML = "..."
+    if (i + 1 >= manualLines.length) {
+        nextLine.innerHTML = "...";
     } else {
         nextLine.innerHTML = manualLines[i+1];
     }

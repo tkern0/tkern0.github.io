@@ -12,8 +12,8 @@ function autoScroll() {
 
 function fixLineCount() {
     startLines.innerHTML = startTimes.value.split(/\n/g).length + " lines";
-    lyricLines.innerHTML = lyrics.value.split(/\n/g).length + " lines";
-    endLines.innerHTML = endTimes.value.split(/\n/g).length + " lines";
+    lyricLines.innerHTML = lyrics.value.split(/\n/g).length     + " lines";
+    endLines.innerHTML   = endTimes.value.split(/\n/g).length   + " lines";
 }
 
 // Only want to 'reset' times the first time you switch tabs
@@ -172,8 +172,8 @@ function convertText(text, startTime, endTime) {
 
         // I really wish there was a proper format(), this looks messy as hell
         inputText.value += "Time: " + currentTime + ", " + (currentTime
-                        + lineMS) + "\n" + "Text: \"" + line + "\", \""
-                        + currentFont + "\", " + x + ", " + y + ", #000000\n";
+                        + lineMS) + "\n" + "Text: 0, #000000, \"" + line + "\", \""
+                        + currentFont + "\", " + x + ", " + y + "\n";
 
         currentTime += lineMS + GAP_MS;
     }

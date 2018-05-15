@@ -42,14 +42,16 @@ var drawStartTime   = null;
 var drawEndTime     = null;
 var drawX1          = null;
 var drawY1          = null;
-var drawSelect1     = null;
 var drawX2          = null;
 var drawY2          = null;
-var drawSelect2     = null;
+var drawSelect      = null;
 var drawRadius      = null;
 var drawString      = null;
 var drawFont        = null;
 var drawRadiusValue = null;
+var drawSubmit      = null;
+var drawTimeError   = null;
+var drawZ           = null;
 window.addEventListener("load", function() {
     outputCanvas    = document.getElementById("outputCanvas");
     inputText       = document.getElementById("inputText");
@@ -81,21 +83,24 @@ window.addEventListener("load", function() {
     drawEndTime     = document.getElementById("drawEndTime");
     drawX1          = document.getElementById("drawX1");
     drawY1          = document.getElementById("drawY1");
-    drawSelect1     = document.getElementById("drawSelect1");
     drawX2          = document.getElementById("drawX2");
     drawY2          = document.getElementById("drawY2");
-    drawSelect2     = document.getElementById("drawSelect2");
+    drawSelect      = document.getElementById("drawSelect");
     drawRadius      = document.getElementById("drawRadius");
     drawString      = document.getElementById("drawString");
     drawFont        = document.getElementById("drawFont");
     drawRadiusValue = document.getElementById("drawRadiusValue");
+    drawSubmit      = document.getElementById("drawSubmit");
+    drawTimeError   = document.getElementById("drawTimeError");
+    drawZ           = document.getElementById("drawZ");
 
+    // Some other stuff we can only do one the page is loaded
     currentMenu = menuAnimation;
     ctx = outputCanvas.getContext("2d");
 
     fixCanvas();
     drawChange();
-    drawFixPointLimits();
+    drawStopSubmit();
 
     lyrics.addEventListener("scroll", autoScroll);
 
@@ -107,9 +112,10 @@ window.addEventListener("load", function() {
     timeSlider.addEventListener("mouseup", function() {timeChange(true);});
 
     drawOptions.addEventListener("change", drawChange);
+    drawStartTime.addEventListener("change", drawStopSubmit);
+    drawEndTime.addEventListener("change", drawStopSubmit);
 
     window.addEventListener("resize", fixCanvas);
-    window.addEventListener("resize", drawFixPointLimits);
 });
 
 
@@ -135,7 +141,7 @@ function menuChange(id) {
 */
 
 var player;
-function onYouTubeIframeAPIReady(id = "5abamRO41fE") {
+function onYouTubeIframeAPIReady(id = "") {
     player = new YT.Player('player', {
     height: '315',
     width: '560',

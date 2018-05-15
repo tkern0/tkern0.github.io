@@ -9,8 +9,6 @@ function drawChange() {
             drawRadius.hidden   = true;
             drawText.hidden     = true;
             drawError.hidden    = true;
-            drawX2.min          = null;
-            drawY2.min          = null;
             break;
 
         case "line":
@@ -18,8 +16,6 @@ function drawChange() {
             drawRadius.hidden   = true;
             drawText.hidden     = true;
             drawError.hidden    = true;
-            drawX2.min          = 0;
-            drawY2.min          = 0;
             break;
 
         case "circle":
@@ -27,8 +23,6 @@ function drawChange() {
             drawRadius.hidden   = false;
             drawText.hidden     = true;
             drawError.hidden    = true;
-            drawX2.min          = 0;
-            drawY2.min          = 0;
             break;
 
         case "text":
@@ -36,8 +30,6 @@ function drawChange() {
             drawRadius.hidden   = true;
             drawText.hidden     = false;
             drawError.hidden    = true;
-            drawX2.min          = 0;
-            drawY2.min          = 0;
             break;
 
         default:
@@ -45,65 +37,67 @@ function drawChange() {
             drawRadius.hidden   = true;
             drawText.hidden     = true;
             drawError.hidden    = false;
-            drawX2.min          = 0;
-            drawY2.min          = 0;
     }
 }
 
-function drawSubmit() {
+function drawSubmitButton() {
     inputText.value += "Time: " + Math.round(drawStartTime.value * 1000) + ", "
-                    + Math.round(drawEndTime.value * 1000) + "\n"
+                    + Math.round(drawEndTime.value * 1000) + "\n";
     var x1 = Math.round(drawX1.value);
     var y1 = Math.round(drawY1.value);
     var colour = drawColour.value;
+    var z = Math.round(drawZ.value);
     switch (drawOptions.value) {
         case "rect":
             var x2 = Math.round(drawX2.value);
             var y2 = Math.round(drawY2.value);
-            inputText.value += "Rect: " + x1 + ", " + y1 + ", " + x2 + ", " + y2
-                            + ", " + colour + "\n"
+            inputText.value += "Rect: " + z + ", " + colour + ", " + x1 + ", "
+                            + y1 + ", " + x2 + ", " + y2 + "\n"
             break;
 
         case "rectFull":
             var x2 = Math.round(drawX2.value);
             var y2 = Math.round(drawY2.value);
-            inputText.value += "RectFull: " + x1 + ", " + y1 + ", " + x2 + ", " + y2
-                            + ", " + colour + "\n"
+            inputText.value += "RectFull: " + z + ", " + colour + ", " + x1
+                            + ", " + y1 + ", " + x2 + ", " + y2 + "\n"
             break;
 
         case "line":
             var x2 = Math.round(drawX2.value);
             var y2 = Math.round(drawY2.value);
-            inputText.value += "Line: " + x1 + ", " + y1 + ", " + x2 + ", " + y2
-                            + ", " + colour + "\n"
+            inputText.value += "Line: " + z + ", " + colour + ", " + x1 + ", "
+                            + y1 + ", " + x2 + ", " + y2 + "\n"
             break;
 
         case "circle":
             var r = Math.round(drawRadiusValue.value);
-            inputText.value += "Circle: " + x1 + ", " + y1 + ", " + r + ", "
-                            + colour + "\n"
+            inputText.value += "Circle: " + z + ", " + colour + ", " + x1 + ", "
+                            + y1 + ", " + r + "\n"
             break;
 
         case "circleFull":
             var r = Math.round(drawRadiusValue.value);
-            inputText.value += "CircleFull: " + x1 + ", " + y1 + ", " + r + ", "
-                            + colour + "\n"
+            inputText.value += "CircleFull: " + z + ", " + colour + ", " + x1
+                            + ", " + y1 + ", " + r + "\n"
             break;
 
         case "text":
             var str = drawString.value;
             var font = drawFont.value;
-            inputText.value += "Text: \"" + str + "\", \"" + font + "\", " + x1
-                           + ", " + y1 + ", " + colour + "\n"
+            inputText.value += "Text: \"" + z + ", " + colour + ", " + str
+                            + "\", \"" + font + "\", " + x1 + ", " + y1 + "\n"
             break;
     }
 }
 
-function drawFixPointLimits() {
-    drawX1.max = outputCanvas.width;
-    drawY1.max = outputCanvas.height;
-    drawX2.max = outputCanvas.width;
-    drawY2.max = outputCanvas.height;
+function drawStopSubmit() {
+    if (drawStartTime.value == drawEndTime.value) {
+        drawSubmit.disabled = true;
+        drawTimeError.innerHTML = "Start and end times cannot be the same";
+    } else {
+        drawSubmit.disabled = false;
+        drawTimeError.innerHTML = "";
+    }
 }
 
 function drawCurrent(start) {
@@ -114,53 +108,42 @@ function drawCurrent(start) {
     }
 }
 
-var currentPoint = 0
-function drawSelectToggle(p1) {
-    if (p1) {
-        if (currentPoint == 1) {
-            drawSelect1.innerHTML = "Select on Canvas";
-            outputCanvas.removeEventListener("mousedown", drawSelectP1);
-            outputCanvas.removeEventListener("mousedown", drawSelectP2);
-            currentPoint = 0;
-        } else {
-            drawSelect1.innerHTML = "Stop Selecting";
-            drawSelect2.innerHTML = "Select on Canvas";
-            outputCanvas.addEventListener("mousedown", drawSelectP1);
-            outputCanvas.removeEventListener("mousedown", drawSelectP2);
-            currentPoint = 1;
-        }
+var selecting = false;
+function drawSelectToggle() {
+    if (selecting) {
+        drawSelect.innerHTML = "Select on Canvas";
+        outputCanvas.removeEventListener("mousedown", drawSelectP1);
+        outputCanvas.removeEventListener("mouseup", drawSelectP2);
     } else {
-        if (currentPoint == 2) {
-            drawSelect2.innerHTML = "Select on Canvas";
-            outputCanvas.removeEventListener("mousedown", drawSelectP1);
-            outputCanvas.removeEventListener("mousedown", drawSelectP2);
-            currentPoint = 0;
-        } else {
-            drawSelect2.innerHTML = "Stop Selecting";
-            drawSelect1.innerHTML = "Select on Canvas";
-            outputCanvas.removeEventListener("mousedown", drawSelectP1);
-            outputCanvas.addEventListener("mousedown", drawSelectP2);
-            currentPoint = 2;
-        }
+        drawSelect.innerHTML = "Stop Selecting";
+        outputCanvas.addEventListener("mousedown", drawSelectP1);
+        outputCanvas.addEventListener("mouseup", drawSelectP2);
     }
+    selecting = !selecting;
 }
 
 function drawSelectP1(e) {
-    console.log(e);
     var baseCoords =  outputCanvas.getBoundingClientRect();
-    drawX1.value = e.clientX - baseCoords.x
-    drawY1.value = e.clientY - baseCoords.y
+    drawX1.value = Math.round(e.clientX - baseCoords.x);
+    drawY1.value = Math.round(e.clientY - baseCoords.y);
 }
 
 function drawSelectP2(e) {
-    console.log(e)
-    var baseCoords =  outputCanvas.getBoundingClientRect()
-    drawX2.value = e.clientX - baseCoords.x
-    drawY2.value = e.clientY - baseCoords.y
-    if (drawOptions.value == "rect") {
-        drawX2.value -= drawX1.value
-        drawY2.value -= drawY1.value
+    var baseCoords =  outputCanvas.getBoundingClientRect();
+    drawX2.value = Math.round(e.clientX - baseCoords.x);
+    drawY2.value = Math.round(e.clientY - baseCoords.y);
+    if (drawOptions.value == "rectFull") {
+        drawX2.value -= drawX1.value;
+        drawY2.value -= drawY1.value;
+    } else if (drawOptions.value == "circle"
+               || drawOptions.value == "circleFull") {
+        var deltaX = drawX2.value - drawX1.value;
+        var deltaY = drawY2.value - drawY1.value;
+        var radius = Math.round((deltaX**2 + deltaY**2)**0.5);
+        drawRadiusValue.value = radius;
     }
+    drawSelectToggle();
+    drawPreview();
 }
 
 function drawPreview() {

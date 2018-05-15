@@ -13,10 +13,12 @@ if (!!window.chrome && !!window.chrome.webstore) {
     Sets the time when all following elements will appear and dissappear
     These times are in frames because that's easy, we'll probably want to
      change to ms at some point if we even keep this format
-   Rect: x1, y1, x2, y2
-   Line: x1, y1, x2, y2
-   Circle: x, y, r
-   Text: "TEXT", "FONT", x, y
+   Rect: z, colour, x1, y1, x2, y2
+   RectFull: z, colour, x1, y1, x2, y2
+   Line: z, colour, x1, y1, x2, y2
+   Circle: z, colour, x, y, r
+   CircleFull: z, colour, x, y, r
+   Text: z, colour, "TEXT", "FONT", x, y
 */
 var maxTime = 0;
 function parseInput() {
@@ -27,13 +29,13 @@ function parseInput() {
     var start = 0;
     var end = -1;
     // This makes it really easy to add new elements
-    var allRegexes = [/^(rect): ?(\d*?), ?(\d*?), ?(\d*?), ?(\d*?), ?(#[0-9a-f]{6})$/im,
-                      /^(rectfull): ?(\d*?), ?(\d*?), ?(\d*?), ?(\d*?), ?(#[0-9a-f]{6})$/im,
-                      /^(line): ?(\d*?), ?(\d*?), ?(\d*?), ?(\d*?), ?(#[0-9a-f]{6})$/im,
-                      /^(circle): ?(\d*?), ?(\d*?), ?(\d*?), ?(#[0-9a-f]{6})$/im,
-                      /^(circlefull): ?(\d*?), ?(\d*?), ?(\d*?), ?(#[0-9a-f]{6})$/im,
-                      /^(text): ?"(.*?)", ?"(.*?)", ?(\d*?), ?(\d*?), ?(#[0-9a-f]{6})$/im];
-    for (i = 0; i < allText.length; i++) {
+    var allRegexes = [/^(rect): ?(-?\d*?), ?(#[0-9a-f]{6}), ?(\d*?), ?(\d*?), ?(\d*?), ?(\d*?)$/im,
+                      /^(rectfull): ?(-?\d*?), ?(#[0-9a-f]{6}), ?(\d*?), ?(\d*?), ?(\d*?), ?(\d*?)$/im,
+                      /^(line): ?(-?\d*?), ?(#[0-9a-f]{6}), ?(\d*?), ?(\d*?), ?(\d*?), ?(\d*?)$/im,
+                      /^(circle): ?(-?\d*?), ?(#[0-9a-f]{6}), ?(\d*?), ?(\d*?), ?(\d*?)$/im,
+                      /^(circlefull): ?(-?\d*?), ?(#[0-9a-f]{6}), ?(\d*?), ?(\d*?), ?(\d*?)$/im,
+                      /^(text): ?(-?\d*?), ?(#[0-9a-f]{6}), ?"(.*?)", ?"(.*?)", ?(\d*?), ?(\d*?)$/im];
+    for (var i=0; i<allText.length; i++) {
         var line = allText[i].trim();
         // Time works a bit differently to the others so it's seperate
         var match = line.match(/time: ?(\d*?), ?(\d*?)$/im);
@@ -50,17 +52,16 @@ function parseInput() {
             continue;
         }
         // Checks all regexes for a match, saves to output if it gets one
-        for (j = 0; j < allRegexes.length; j++) {
+        for (var j=0; j<allRegexes.length; j++) {
             var match = line.match(allRegexes[j]);
             if (match) {
-                var colourIndex = match.length - 1;
-                var object = {start: start,
-                              end: end,
-                              type: match[1].toLowerCase(),
-                              colour: match[colourIndex],
-                              params: match.slice(2, colourIndex)}
+                var object = {start:start,
+                              end:      end,
+                              type:     match[1].toLowerCase(),
+                              z:        parseInt(match[2]),
+                              colour:   match[3],
+                              params:   match.slice(4)};
                 output.push(object);
-                continue;
             }
         }
     }
@@ -110,6 +111,7 @@ function togglePlaying() {
         }
     }
 }
+
 var paused = true;
 var render = null;
 function pause() {
@@ -172,31 +174,27 @@ function draw(forceRedraw=false, advance=true) {
         currentElements.push(futureElements.shift());
         redraw = true;
     }
-    if (redraw) {
-        /*
-          Sorts by end time of each object, but puts impossible times, where
-           end is before start, at the end
-        */
-        currentElements.sort(function(a, b) {
-            if (a.start > a.end) {return 1;}
-            if (b.start > b.end) {return -1;}
-            return (a.end > b.end) ? 1 : -1;
-        })
-    }
     /*
       Check if to remove old elements
-      Again because it's sorted we only need this to fail once to know that
-       we're done
+      This has to be sorted by z so no easy exit, have to check everything
+      can't remove stuff in place cause stuff will break
     */
-    while (currentElements.length > 0 && time >= currentElements[0].end) {
-        currentElements.shift();
+    var toRemove = [];
+    for (var i=0; i<currentElements.length; i++) {
+        if (currentElements[i].end <= time) {
+            toRemove.push(i);
+        }
+    }
+    for (var i=0; i<toRemove.length; i++) {
+        currentElements.splice(toRemove[i] - i);
         redraw = true;
     }
 
     // If nothing's changed no need to redraw
     if (redraw) {
+        currentElements.sort(function(a, b) {return (a.z > b.z) ? 1 : -1;});
         ctx.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
-        for (i=0; i<currentElements.length; i++) {
+        for (var i=0; i<currentElements.length; i++) {
             var type = currentElements[i].type;
             var params = currentElements[i].params;
             ctx.fillStyle = currentElements[i].colour;
