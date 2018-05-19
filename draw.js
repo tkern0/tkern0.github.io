@@ -45,45 +45,41 @@ function drawSubmitButton() {
                     + Math.round(drawEndTime.value * 1000) + "\n";
     var x1 = Math.round(drawX1.value);
     var y1 = Math.round(drawY1.value);
+    var x2 = Math.round(drawX2.value);
+    var y2 = Math.round(drawY2.value);
+    var r = Math.round(drawRadiusValue.value);
     var colour = drawColour.value;
+    var str = drawString.value;
+    var font = drawFont.value;
     var z = Math.round(drawZ.value);
     switch (drawOptions.value) {
         case "rect":
-            var x2 = Math.round(drawX2.value);
-            var y2 = Math.round(drawY2.value);
             inputText.value += "Rect: " + z + ", " + colour + ", " + x1 + ", "
                             + y1 + ", " + x2 + ", " + y2 + "\n"
             break;
 
         case "rectFull":
-            var x2 = Math.round(drawX2.value);
-            var y2 = Math.round(drawY2.value);
             inputText.value += "RectFull: " + z + ", " + colour + ", " + x1
                             + ", " + y1 + ", " + x2 + ", " + y2 + "\n"
             break;
 
         case "line":
-            var x2 = Math.round(drawX2.value);
-            var y2 = Math.round(drawY2.value);
             inputText.value += "Line: " + z + ", " + colour + ", " + x1 + ", "
                             + y1 + ", " + x2 + ", " + y2 + "\n"
             break;
 
         case "circle":
-            var r = Math.round(drawRadiusValue.value);
+
             inputText.value += "Circle: " + z + ", " + colour + ", " + x1 + ", "
                             + y1 + ", " + r + "\n"
             break;
 
         case "circleFull":
-            var r = Math.round(drawRadiusValue.value);
             inputText.value += "CircleFull: " + z + ", " + colour + ", " + x1
                             + ", " + y1 + ", " + r + "\n"
             break;
 
         case "text":
-            var str = drawString.value;
-            var font = drawFont.value;
             inputText.value += "Text: \"" + z + ", " + colour + ", " + str
                             + "\", \"" + font + "\", " + x1 + ", " + y1 + "\n"
             break;
@@ -106,6 +102,7 @@ function drawCurrent(start) {
     } else {
         drawEndTime.value = (time / 1000).toFixed(3);
     }
+    drawStopSubmit()
 }
 
 var selecting = false;
@@ -147,55 +144,51 @@ function drawSelectP2(e) {
 }
 
 function drawPreview() {
-    ctx.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
-    draw(true, false);
-    ctx.fillStyle = drawColour.value;
-    ctx.strokeStyle = drawColour.value;
+    var params = [];
+    var x1 = Math.round(drawX1.value);
+    var y1 = Math.round(drawY1.value);
+    var x2 = Math.round(drawX2.value);
+    var y2 = Math.round(drawY2.value);
+    var r = Math.round(drawRadiusValue.value);
+    var colour = drawColour.value;
+    var str = drawString.value;
+    var font = drawFont.value;
+    var z = Math.round(drawZ.value);
     switch (drawOptions.value) {
         case "rect":
-            ctx.beginPath();
-            ctx.beginPath();
-            ctx.moveTo(parseInt(drawX1.value), parseInt(drawY1.value));
-            ctx.lineTo(parseInt(drawX1.value), parseInt(drawY2.value));
-            ctx.lineTo(parseInt(drawX2.value), parseInt(drawY2.value));
-            ctx.lineTo(parseInt(drawX2.value), parseInt(drawY1.value));
-            ctx.lineTo(parseInt(drawX1.value), parseInt(drawY1.value));
-            ctx.stroke();
+            params = [x1, y1, x2, y2];
             break;
 
         case "rectFull":
-            ctx.beginPath();
-            ctx.fillRect(parseInt(drawX1.value), parseInt(drawY1.value),
-                         parseInt(drawX2.value), parseInt(drawY2.value));
+            params = [x1, y1, x2, y2];
             break;
 
         case "line":
-            ctx.beginPath();
-            ctx.moveTo(parseInt(drawX1.value), parseInt(drawY1.value));
-            ctx.lineTo(parseInt(drawX2.value), parseInt(drawY2.value));
-            ctx.stroke();
+            params = [x1, y1, x2, y2];
             break;
 
         case "circle":
-            ctx.beginPath();
-            ctx.arc(parseInt(drawX1.value), parseInt(drawY1.value),
-                    parseInt(drawRadiusValue.value), 0, 2*Math.PI);
-            ctx.stroke();
+            params = [x1, y1, r];
             break;
 
         case "circleFull":
-            ctx.beginPath();
-            ctx.arc(parseInt(drawX1.value), parseInt(drawY1.value),
-                    parseInt(drawRadiusValue.value), 0, 2*Math.PI);
-            ctx.stroke();
-            ctx.fill();
+            params = [x1, y1, r];
             break;
 
         case "text":
-            ctx.beginPath();
-            ctx.font = drawFont.value;
-            ctx.fillText(drawString.value, parseInt(drawX1.value),
-                         parseInt(drawY1.value));
+            params = [str, font, x1, y1];
             break;
     }
+    var object = {start:    Math.round(drawStartTime.value * 1000),
+                  end:      Math.round(drawEndTime.value * 1000),
+                  type:     drawOptions.value.toLowerCase(),
+                  z:        Math.round(drawZ.value),
+                  colour:   drawColour.value,
+                  params:   params};
+    // Need to use .slice() so we don't just get another refrence
+    var drawTempElements = currentElements.slice();
+    currentElements.push(object);
+    currentElements.sort(function(a, b) {return (a.z > b.z) ? 1 : -1;});
+    draw(true, false);
+    currentElements = drawTempElements;
 }

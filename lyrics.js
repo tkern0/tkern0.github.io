@@ -11,9 +11,15 @@ function autoScroll() {
 }
 
 function fixLineCount() {
-    startLines.innerHTML = startTimes.value.split(/\n/g).length + " lines";
-    lyricLines.innerHTML = lyrics.value.split(/\n/g).length     + " lines";
-    endLines.innerHTML   = endTimes.value.split(/\n/g).length   + " lines";
+    var startLen = startTimes.value.split(/\n/g).length
+    var lyricLen = lyrics.value.split(/\n/g).length
+    var endLen  = endTimes.value.split(/\n/g).length
+    startLines.innerHTML = startLen + " line";
+    lyricLines.innerHTML = lyricLen + " line";
+    endLines.innerHTML   = endLen   + " line";
+    startLines.innerHTML += (startLen == 1) ? "" : "s"
+    lyricLines.innerHTML += (lyricLen == 1) ? "" : "s"
+    endLines.innerHTML   += (endLen   == 1) ? "" : "s"
 }
 
 // Only want to 'reset' times the first time you switch tabs
@@ -40,6 +46,7 @@ function lyricTimes() {
     end[lines - 1] = videoLength;
     startTimes.value = start.join("\n");
     endTimes.value = end.join("\n");
+    fixLineCount();
 }
 
 // Using the provided start and end times try guess the timing of each line

@@ -141,15 +141,17 @@ function menuChange(id) {
 */
 
 var player;
-function onYouTubeIframeAPIReady(id = "") {
-    player = new YT.Player('player', {
-    height: '315',
-    width: '560',
-    videoId: id,
-    events: {
-      'onReady': onPlayerReady,
+function onYouTubeIframeAPIReady(id) {
+    if (id) {
+        player = new YT.Player('player', {
+        height: '315',
+        width: '560',
+        videoId: id,
+        events: {
+          'onReady': onPlayerReady,
+        }
+        });
     }
-    });
 }
 
 var videoLength = 0;

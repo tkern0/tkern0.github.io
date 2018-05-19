@@ -11,10 +11,9 @@ if (!!window.chrome && !!window.chrome.webstore) {
   Currently has the following 'commands'
    Time: start, end
     Sets the time when all following elements will appear and dissappear
-    These times are in frames because that's easy, we'll probably want to
-     change to ms at some point if we even keep this format
-   Rect: z, colour, x1, y1, x2, y2
-   RectFull: z, colour, x1, y1, x2, y2
+    These times are in ms
+   Rect: z, colour, x, y, w, h
+   RectFull: z, colour, x, y, w, h
    Line: z, colour, x1, y1, x2, y2
    Circle: z, colour, x, y, r
    CircleFull: z, colour, x, y, r
@@ -29,16 +28,16 @@ function parseInput() {
     var start = 0;
     var end = -1;
     // This makes it really easy to add new elements
-    var allRegexes = [/^(rect): ?(-?\d*?), ?(#[0-9a-f]{6}), ?(\d*?), ?(\d*?), ?(\d*?), ?(\d*?)$/im,
-                      /^(rectfull): ?(-?\d*?), ?(#[0-9a-f]{6}), ?(\d*?), ?(\d*?), ?(\d*?), ?(\d*?)$/im,
-                      /^(line): ?(-?\d*?), ?(#[0-9a-f]{6}), ?(\d*?), ?(\d*?), ?(\d*?), ?(\d*?)$/im,
-                      /^(circle): ?(-?\d*?), ?(#[0-9a-f]{6}), ?(\d*?), ?(\d*?), ?(\d*?)$/im,
-                      /^(circlefull): ?(-?\d*?), ?(#[0-9a-f]{6}), ?(\d*?), ?(\d*?), ?(\d*?)$/im,
-                      /^(text): ?(-?\d*?), ?(#[0-9a-f]{6}), ?"(.*?)", ?"(.*?)", ?(\d*?), ?(\d*?)$/im];
+    var allRegexes = [/^(rect): ?(-?\d*?), ?(#[0-9a-f]{6}), ?(-?\d*?), ?(-?\d*?), ?(-?\d*?), ?(-?\d*?)$/im,
+                      /^(rectfull): ?(-?\d*?), ?(#[0-9a-f]{6}), ?(-?\d*?), ?(-?\d*?), ?(-?\d*?), ?(-?\d*?)$/im,
+                      /^(line): ?(-?\d*?), ?(#[0-9a-f]{6}), ?(-?\d*?), ?(-?\d*?), ?(-?\d*?), ?(-?\d*?)$/im,
+                      /^(circle): ?(-?\d*?), ?(#[0-9a-f]{6}), ?(-?\d*?), ?(-?\d*?), ?(-?\d*?)$/im,
+                      /^(circlefull): ?(-?\d*?), ?(#[0-9a-f]{6}), ?(-?\d*?), ?(-?\d*?), ?(-?\d*?)$/im,
+                      /^(text): ?(-?\d*?), ?(#[0-9a-f]{6}), ?"(.*?)", ?"(.*?)", ?(-?\d*?), ?(-?\d*?)$/im];
     for (var i=0; i<allText.length; i++) {
         var line = allText[i].trim();
         // Time works a bit differently to the others so it's seperate
-        var match = line.match(/time: ?(\d*?), ?(\d*?)$/im);
+        var match = line.match(/time: ?(-?\d*?), ?(-?\d*?)$/im);
         if (match) {
             /*
               We need to explicitly convert these two because otherwise we
@@ -177,7 +176,7 @@ function draw(forceRedraw=false, advance=true) {
     /*
       Check if to remove old elements
       This has to be sorted by z so no easy exit, have to check everything
-      can't remove stuff in place cause stuff will break
+      Can't remove stuff in place cause indexes will shift
     */
     var toRemove = [];
     for (var i=0; i<currentElements.length; i++) {

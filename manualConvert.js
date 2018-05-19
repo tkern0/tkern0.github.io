@@ -18,7 +18,7 @@ function manualSetup() {
 }
 
 function manualNext() {
-    if (manualCurrentTime < 0) {
+    if (manualCurrentTime < 0 && lyrics.value.replace(/\s/g, "").length > 0) {
         manualLines = lyrics.value.replace(/\n\s*\n/g, "\n").split("\n");
         updateManualLines(0);
 
