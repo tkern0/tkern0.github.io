@@ -11,7 +11,7 @@ function manualSetup() {
     manualStartTime = -1;
     manualCurrentTime = -1;
 
-    manualTimer.innerHTML = "Current Time: 0.000";
+    manualTimer.innerHTML = "Current Time: 0:00.000";
     manualButton.innerHTML = "Start";
 
     updateManualLines(0);
@@ -47,7 +47,7 @@ function manualNext() {
         if (manualLineNum >= manualLines.length){
             clearInterval(runningIntervals.manual);
             manualButton.innerHTML = "Start";
-            manualTimer.innerHTML = "Current Time: 0.000";
+            manualTimer.innerHTML = "Current Time: 0:00.000";
         } else if (manualLineNum + 1 >= manualLines.length) {
             manualButton.innerHTML = "Done";
         }
@@ -68,6 +68,8 @@ function updateManualLines(i) {
 
 function manualUpdateTimer() {
     manualCurrentTime += WAIT_MS;
-    var displayTime = "Current Time: " + (manualCurrentTime / 1000).toFixed(3);
+    var timeMin = Math.floor(manualCurrentTime / 60000);
+    var timeSec = ((manualCurrentTime / 1000) % 60).toFixed(3).padStart(6, "0");
+    var displayTime = "Current Time: " + timeMin + ":" + timeSec;
     manualTimer.innerHTML = displayTime;
 }

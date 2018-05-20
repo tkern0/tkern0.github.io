@@ -87,7 +87,11 @@ function load() {
 }
 
 function drawTime() {
-    timer.innerHTML = (time / 1000).toFixed(3) + "/" + (maxTime / 1000).toFixed(3);
+    var timeMin = Math.floor(time / 60000);
+    var timeSec = ((time / 1000) % 60).toFixed(3).padStart(6, "0");
+    var maxMin = Math.floor(maxTime / 60000);
+    var maxSec = ((maxTime / 1000) % 60).toFixed(3).padStart(6, "0");
+    timer.innerHTML = timeMin + ":" + timeSec + "/" + maxMin + ":" + maxSec;
 }
 
 function timeChange(release) {
