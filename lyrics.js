@@ -20,16 +20,14 @@ function fixLineCount() {
     startLines.innerHTML += (startLen == 1) ? "" : "s"
     lyricLines.innerHTML += (lyricLen == 1) ? "" : "s"
     endLines.innerHTML   += (endLen   == 1) ? "" : "s"
-}
-
-// Only want to 'reset' times the first time you switch tabs
-var initalSetup = true;
-function lyricsSetup() {
-    error.innerHTML = ''
-    if (initalSetup) {
-        initalSetup = false;
-        lyricTimes();
-        fixLineCount();
+    var start = parseInt(startTimes.value.match(/^\s*([0-9.]+)/)[1]);
+    var end = parseInt(endTimes.value.match(/([0-9.]+)\s*$/)[1]);
+    if (start == end) {
+        lyricsConvert.disabled = true;
+        error.innerHTML = "Start and end times cannot be the same";
+    } else {
+        lyricsConvert.disabled = false;
+        error.innerHTML = "";
     }
 }
 
@@ -113,8 +111,8 @@ function convertLyrics() {
         var group = lineGroups[i];
         convertText(group.lines, group.start * 1000, group.end * 1000);
     }
-    // Switch back so you can see whatg you just added
-    menuChange("menuAnimation");
+    // Switch back so you can see what you just added
+    // menuChange("menuAnimation");
 }
 
 /*
@@ -122,7 +120,7 @@ function convertLyrics() {
     Will reduce the font size if it has to to do this
     Returns the coordinates and font to use for the line
 */
-function fitLine(str, fontSize = FONT_SIZE, font = FONT) {
+function fitLine(str, fontSize = lyricsFontSize.value, font = lyricsFont.value) {
     var ctx = outputCanvas.getContext("2d");
     var C_WIDTH = outputCanvas.width;
     var C_HEIGHT = outputCanvas.height;
@@ -160,6 +158,11 @@ function convertText(text, startTime, endTime) {
     var y = 0;
     var currentFont = "";
 
+    var allowedStyles = []
+    if (lyricsCircles.checked) {allowedStyles.push("circles");}
+    if (lyricsBoxes.checked) {allowedStyles.push("boxes");}
+    if (lyricsLines.checked) {allowedStyles.push("lines");}
+
     /*
       We leave GAP_MS between each line, but otherwise we give each word an
        equal amount of time
@@ -182,6 +185,64 @@ function convertText(text, startTime, endTime) {
                         + lineMS) + "\n" + "Text: 0, #000000, \"" + line + "\", \""
                         + currentFont + "\", " + x + ", " + y + "\n";
 
+        lineStyle = allowedStyles[randInt(allowedStyles.length)]
+        var C_WIDTH = outputCanvas.width;
+        var C_HEIGHT = outputCanvas.height;
+        switch (lineStyle) {
+            case "circles":
+                for (var j = 0; j < randInt(25, 50); j++) {
+                    x = randInt(-25, C_WIDTH + 25);
+                    y = (j % 2 == 0) ? 5*C_HEIGHT/6 : C_HEIGHT/6
+                    y += randInt(-C_HEIGHT/6 - 25, C_HEIGHT/6 + 25);
+                    r = randInt(10, 50);
+                    inputText.value += "Circle: -1, #7f7f7f, " + x + ", " + y
+                                    + ", " + r + "\n"
+                }
+                break;
+
+            case "boxes":
+                for (var j = 0; j < randInt(25, 50); j++) {
+                    x = randInt(-50, C_WIDTH + 50);
+                    y = (j % 2 == 0) ? 5*C_HEIGHT/6 : C_HEIGHT/6
+                    y += randInt(-C_HEIGHT/6 - 25, C_HEIGHT/6 + 25);
+                    w = randInt(20, 120);
+                    h = randInt(20, 120);
+                    inputText.value += "Rect: -1, #7f7f7f, " + x + ", " + y
+                                    + ", " + w + ", " + h + "\n"
+                }
+                break;
+
+            case "lines":
+                for (var j = 0; j < randInt(25, 50); j++) {
+                    x1 = randInt(-25, C_WIDTH + 25);
+                    y1 = (j % 2 == 0) ? 5*C_HEIGHT/6 : C_HEIGHT/6
+                    y1 += randInt(-C_HEIGHT/6 - 25, C_HEIGHT/6 + 25);
+                    x2 = randInt(-25, C_WIDTH + 25);
+                    y2 = (j % 2 == 0) ? 5*C_HEIGHT/6 : C_HEIGHT/6
+                    y2 += randInt(-C_HEIGHT/6 - 25, C_HEIGHT/6 + 25);
+                    inputText.value += "Line: -1, #7f7f7f, " + x1 + ", " + y1
+                                    + ", " + x2 + ", " + y2 + "\n"
+                }
+                for (var j = 0; j < randInt(3, 10); j++) {
+                    x1 = randInt(-25, C_WIDTH + 25);
+                    y1 = C_HEIGHT/6 + randInt(-C_HEIGHT/6 - 25, C_HEIGHT/6 + 25);
+                    x2 = randInt(-25, C_WIDTH + 25);
+                    y2 = 5*C_HEIGHT/6 + randInt(-C_HEIGHT/6 - 25, C_HEIGHT/6 + 25);
+                    inputText.value += "Line: -1, #7f7f7f, " + x1 + ", " + y1
+                                    + ", " + x2 + ", " + y2 + "\n"
+                }
+                break;
+        }
+
         currentTime += lineMS + GAP_MS;
     }
+}
+
+function randInt(min=0, max=0) {
+    if (max < min) {min, max = max, min;}
+    return Math.floor(Math.random() * (max - min)) + min
+}
+
+function lyricOptionsToggle() {
+    lyricOptions.hidden = !lyricOptions.hidden;
 }

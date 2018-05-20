@@ -13,12 +13,13 @@
 <body>
     <table class="center"><tr>
     <td id="leftSide">
+        <h1>Musical Poetry in Motion</h1>
         <canvas class="center" id="outputCanvas"></canvas>
         <input id="timeSlider" type="range" min="0" max="100" value="0">
         <div class="center" id="playerButtons">
             <button onclick="togglePlaying()" id="playButton">Play</button>
             <button onclick="load()">Load</button>
-            <input type="checkbox" id="syncPlayer" checked>Sync with Youtube video<br>
+            <input type="checkbox" id="syncPlayer" checked>Sync with Youtube video
             <span class="right" id="timer">0.000/0.000</span>
         </div>
         <br>
@@ -32,13 +33,13 @@
     </td>
     <td id="rightSide">
         <div class="right" id="menuBar">
-            <button class="bigButton" onclick="menuChange('menuAnimation')">Animation Info</button>
+            <button class="bigButton" onclick="menuChange('menuLyrics');">Lyrics</button>
             <button class="bigButton" onclick="menuChange('menuDraw'); drawChange()">Draw</button>
-            <button class="bigButton" onclick="menuChange('menuLyrics'); lyricsSetup()">Lyrics</button>
             <button class="bigButton" onclick="menuChange('menuManual'); manualSetup()">Manual Timing</button>
+            <button class="bigButton" onclick="menuChange('menuAnimation')">Animation Info</button>
         </div>
-        <div id="menuAnimation">
-            <textarea class="center fullWidth" id="inputText" rows=50></textarea>
+        <div hidden id="menuAnimation">
+            <textarea class="center fullWidth" id="inputText" rows=60></textarea>
         </div>
         <div hidden id="menuManual">
             <div class="center" id="currentLine">Error finding lines</div>
@@ -46,20 +47,47 @@
             <button class="center bigButton wideButton" onclick="manualNext()" id="manualButton">Start</button>
             <div class="center" id="manualTimer">Current Time: 0.000</div>
         </div>
-        <div hidden id="menuLyrics">
-            <table class="fullWidth"><tr><td>Start Time</td>
-            <td align="center">All times in seconds</td>
-            <td align="right">End Time</td></tr></table>
-            <table><tr>
-            <td><textarea id="startTimes" rows=50 cols=3></textarea></td>
-            <td class="fullWidth"><textarea id="lyrics" class="fullWidth" rows=50></textarea></td>
-            <td><textarea id="endTimes" rows=50 cols=3></textarea></td>
+        <div id="menuLyrics">
+            <table class="fullWidth"><tr><td>
+                <table class="fullWidth"><tr>
+                    <td>Start Time</td>
+                    <td align="center">All times in seconds</td>
+                    <td align="right">End Time</td>
+                </tr></table>
+                <table><tr>
+                    <td><textarea id="startTimes" rows=50 cols=3></textarea></td>
+                    <td class="fullWidth"><textarea id="lyrics" class="fullWidth" rows=50></textarea></td>
+                    <td><textarea id="endTimes" rows=50 cols=3></textarea></td>
+                </tr></table>
+                <table class="fullWidth"><tr><td id="startLines">??? Lines</td>
+                    <td align="center" id="lyricLines">??? Lines</td>
+                    <td align="right" id="endLines">??? Lines</td>
+                </tr></table>
+            </td><td id="lyricOptions" hidden>
+                <h1 class="center">Options</h1>
+                <div class="center">
+                    Default Font:
+                    <input id="lyricsFontSize" type="number" value="50">
+                    <input id="lyricsFont" value="Arial"><br>
+                </div>
+                <span class="center">Text may be made smaller to fit on screen</span>
+                <br>
+                <div class="center">Backgrounds:</div>
+                <table class=center><tr>
+                    <td><img src="circles.png" alt="Circles" width="200"></td>
+                    <td><img src="boxes.png" alt="Boxes" width="200"></td>
+                    <td><img src="lines.png" alt="Lines" width="200"></td>
+                </tr><tr>
+                    <td><input type="checkbox" class="center" id="lyricsCircles" checked></td>
+                    <td><input type="checkbox" class="center" id="lyricsBoxes" checked></td>
+                    <td><input type="checkbox" class="center" id="lyricsLines" checked></td>
+                </tr></table>
+            </td></tr></table>
+            <table class="fullWidth"><tr>
+                <td><button onclick="lyricTimes()">Reset Times</button></td>
+                <td><button class="center bigButton wideButton" onclick="convertLyrics()" id="lyricsConvert" disabled>Convert</button></td>
+                <td class="right"><button onclick="lyricOptionsToggle()">Options</button></td>
             </tr></table>
-            <table class="fullWidth"><tr><td id="startLines">??? Lines</td>
-            <td align="center" id="lyricLines">??? Lines</td>
-            <td align="right" id="endLines">??? Lines</td></tr></table>
-            <button class="left absolute" onclick="lyricTimes()">Reset Times</button>
-            <button class="center bigButton wideButton" onclick="convertLyrics()">Convert</button>
             <div class="center" id="error"></div>
         </div>
         <div id="menuDraw" hidden>
@@ -88,19 +116,15 @@
                 Z Value:
                 <input id="drawZ" type="number" value="0">
             </div>
-            <div class="center">
-                Point 1:
-                <input id="drawX1" type="number" value="0">
-                <input id="drawY1" type="number" value="0">
-            </div>
-            <div id="drawPoint2" hidden>
-                <!--For some reason centering ignores the hidden tag-->
-                <div class="center">
-                    Point 2:
-                    <input id="drawX2" type="number" value="0">
-                    <input id="drawY2" type="number" value="0">
-                </div>
-            </div>
+            <table class="center"><tr>
+                <td><span id="drawPoint1Text">Point 1:</span></td>
+                <td><input id="drawX1" type="number" value="0"></td>
+                <td><input id="drawY1" type="number" value="0"></td>
+            </tr><tr id="drawPoint2" hidden>
+                <td><span id="drawPoint2Text">Point 2:</span></td>
+                <td><input id="drawX2" type="number" value="0"></td>
+                <td><input id="drawY2" type="number" value="0"></td>
+            </tr></table>
             <div id="drawRadius" hidden>
                 <div class="center">
                     Radius:

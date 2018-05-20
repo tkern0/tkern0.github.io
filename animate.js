@@ -74,7 +74,7 @@ var ctx = null;
 var elements = null;
 function load() {
     pause();
-    if (syncPlayer.checked) {
+    if (syncPlayer.checked && player != null) {
         player.pauseVideo();
     }
     elements = parseInput();
@@ -90,7 +90,7 @@ function drawTime() {
 function timeChange(release) {
     pause();
     time = parseInt(timeSlider.value);
-    if (syncPlayer.checked) {
+    if (syncPlayer.checked && player != null) {
         player.pauseVideo();
         player.seekTo(time / 1000, release);
     }
@@ -115,7 +115,7 @@ var paused = true;
 var render = null;
 function pause() {
     clearInterval(render);
-    if (syncPlayer.checked) {
+    if (syncPlayer.checked && player != null) {
         player.pauseVideo();
     }
     playButton.innerHTML = "Play";
@@ -126,7 +126,7 @@ function play() {
     timeJumpFix();
     draw(true);
     render = setInterval(draw, WAIT_MS);
-    if (syncPlayer.checked) {
+    if (syncPlayer.checked && player != null) {
         player.playVideo();
     }
     playButton.innerHTML = "Pause";
@@ -149,7 +149,6 @@ function timeJumpFix() {
     }
 }
 
-var colour = "#000000";
 function draw(forceRedraw=false, advance=true) {
     if (futureElements != null && currentElements != null &&
         futureElements.length == 0 && currentElements.length == 0) {
@@ -185,7 +184,7 @@ function draw(forceRedraw=false, advance=true) {
         }
     }
     for (var i=0; i<toRemove.length; i++) {
-        currentElements.splice(toRemove[i] - i);
+        currentElements.splice(toRemove[i] - i, 1);
         redraw = true;
     }
 
@@ -200,12 +199,15 @@ function draw(forceRedraw=false, advance=true) {
             ctx.strokeStyle = currentElements[i].colour;
             switch (type) {
                 case "rect":
+                    for (var j=0; j<params.length; j++) {
+                        params[j] = parseInt(params[j]);
+                    }
                     ctx.beginPath();
-                    ctx.moveTo(params[0], params[1]);
-                    ctx.lineTo(params[0], params[3]);
-                    ctx.lineTo(params[2], params[3]);
-                    ctx.lineTo(params[2], params[1]);
-                    ctx.lineTo(params[0], params[1]);
+                    ctx.moveTo(params[0],             params[1]);
+                    ctx.lineTo(params[0],             params[1] + params[3]);
+                    ctx.lineTo(params[0] + params[2], params[1] + params[3]);
+                    ctx.lineTo(params[0] + params[2], params[1]);
+                    ctx.lineTo(params[0],             params[1]);
                     ctx.stroke();
                     break;
 

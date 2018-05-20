@@ -27,7 +27,7 @@ var manualTimer     = null;
 var manualButton    = null;
 var currentLine     = null;
 var nextLine        = null;
-var menuAnimation   = null;
+var menuLyrics      = null;
 var timeSlider      = null;
 var syncPlayer      = null;
 var drawOptions     = null;
@@ -52,6 +52,15 @@ var drawRadiusValue = null;
 var drawSubmit      = null;
 var drawTimeError   = null;
 var drawZ           = null;
+var lyricsOptions   = null;
+var lyricsFontSize  = null;
+var lyricsFont      = null;
+var lyricsCircles   = null;
+var lyricsBoxes     = null;
+var lyricsLines     = null;
+var lyricsConvert   = null;
+var drawPoint1Text  = null;
+var drawPoint2Text  = null;
 window.addEventListener("load", function() {
     outputCanvas    = document.getElementById("outputCanvas");
     inputText       = document.getElementById("inputText");
@@ -65,7 +74,7 @@ window.addEventListener("load", function() {
     manualButton    = document.getElementById("manualButton");
     currentLine     = document.getElementById("currentLine");
     nextLine        = document.getElementById("nextLine");
-    menuAnimation   = document.getElementById("menuAnimation");
+    menuLyrics      = document.getElementById("menuLyrics");
     startLines      = document.getElementById("startLines");
     lyricLines      = document.getElementById("lyricLines");
     endLines        = document.getElementById("endLines");
@@ -93,14 +102,25 @@ window.addEventListener("load", function() {
     drawSubmit      = document.getElementById("drawSubmit");
     drawTimeError   = document.getElementById("drawTimeError");
     drawZ           = document.getElementById("drawZ");
+    lyricsOptions   = document.getElementById("lyricsOptions");
+    lyricsFontSize  = document.getElementById("lyricsFontSize");
+    lyricsFont      = document.getElementById("lyricsFont");
+    lyricsCircles   = document.getElementById("lyricsCircles");
+    lyricsBoxes     = document.getElementById("lyricsBoxes");
+    lyricsLines     = document.getElementById("lyricsLines");
+    lyricsConvert   = document.getElementById("lyricsConvert");
+    drawPoint1Text  = document.getElementById("drawPoint1Text");
+    drawPoint2Text  = document.getElementById("drawPoint2Text");
 
     // Some other stuff we can only do one the page is loaded
-    currentMenu = menuAnimation;
+    currentMenu = menuLyrics;
     ctx = outputCanvas.getContext("2d");
 
     fixCanvas();
     drawChange();
     drawStopSubmit();
+    lyricTimes();
+    fixLineCount();
 
     lyrics.addEventListener("scroll", autoScroll);
 

@@ -9,6 +9,8 @@ function drawChange() {
             drawRadius.hidden   = true;
             drawText.hidden     = true;
             drawError.hidden    = true;
+            drawPoint1Text.innerHTML = "Top left";
+            drawPoint2Text.innerHTML = "Width/Height";
             break;
 
         case "line":
@@ -16,6 +18,8 @@ function drawChange() {
             drawRadius.hidden   = true;
             drawText.hidden     = true;
             drawError.hidden    = true;
+            drawPoint1Text.innerHTML = "Start Point";
+            drawPoint2Text.innerHTML = "End Point";
             break;
 
         case "circle":
@@ -23,6 +27,7 @@ function drawChange() {
             drawRadius.hidden   = false;
             drawText.hidden     = true;
             drawError.hidden    = true;
+            drawPoint1Text.innerHTML = "Center";
             break;
 
         case "text":
@@ -30,6 +35,7 @@ function drawChange() {
             drawRadius.hidden   = true;
             drawText.hidden     = false;
             drawError.hidden    = true;
+            drawPoint1Text.innerHTML = "Bottom left";
             break;
 
         default:
@@ -37,6 +43,8 @@ function drawChange() {
             drawRadius.hidden   = true;
             drawText.hidden     = true;
             drawError.hidden    = false;
+            drawPoint1Text.innerHTML = "Point 1";
+            drawPoint2Text.innerHTML = "Point 2";
     }
 }
 
@@ -129,7 +137,8 @@ function drawSelectP2(e) {
     var baseCoords =  outputCanvas.getBoundingClientRect();
     drawX2.value = Math.round(e.clientX - baseCoords.x);
     drawY2.value = Math.round(e.clientY - baseCoords.y);
-    if (drawOptions.value == "rectFull") {
+    if (drawOptions.value == "rect"
+        || drawOptions.value == "rectFull") {
         drawX2.value -= drawX1.value;
         drawY2.value -= drawY1.value;
     } else if (drawOptions.value == "circle"
