@@ -54,7 +54,7 @@ function parseInput() {
         for (var j=0; j<allRegexes.length; j++) {
             var match = line.match(allRegexes[j]);
             if (match) {
-                var object = {start:start,
+                var object = {start:    start,
                               end:      end,
                               type:     match[1].toLowerCase(),
                               z:        parseInt(match[2]),
@@ -81,6 +81,9 @@ function load() {
     time = 0;
     drawTime();
     timeSlider.max = maxTime;
+    if (elements.length != 0) {
+        playButton.disabled = false;
+    }
 }
 
 function drawTime() {
@@ -147,6 +150,7 @@ function timeJumpFix() {
             futureElements.push(elements[i]);
         }
     }
+    currentElements.sort(function(a, b) {return (a.z > b.z) ? 1 : -1;});
 }
 
 function draw(forceRedraw=false, advance=true) {
@@ -163,6 +167,8 @@ function draw(forceRedraw=false, advance=true) {
     }
 
     var redraw = forceRedraw;
+    var reorder = false;
+
     /*
       Check for new elements to draw
       Because this list is sorted, once it fails once we know there won't
@@ -170,7 +176,7 @@ function draw(forceRedraw=false, advance=true) {
     */
     while (futureElements.length > 0 && time >= futureElements[0].start) {
         currentElements.push(futureElements.shift());
-        redraw = true;
+        reorder = true;
     }
     /*
       Check if to remove old elements
@@ -185,12 +191,16 @@ function draw(forceRedraw=false, advance=true) {
     }
     for (var i=0; i<toRemove.length; i++) {
         currentElements.splice(toRemove[i] - i, 1);
+        reorder = true;
+    }
+
+    if (reorder) {
         redraw = true;
+        currentElements.sort(function(a, b) {return (a.z > b.z) ? 1 : -1;});
     }
 
     // If nothing's changed no need to redraw
     if (redraw) {
-        currentElements.sort(function(a, b) {return (a.z > b.z) ? 1 : -1;});
         ctx.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
         for (var i=0; i<currentElements.length; i++) {
             var type = currentElements[i].type;

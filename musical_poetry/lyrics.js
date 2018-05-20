@@ -20,14 +20,20 @@ function fixLineCount() {
     startLines.innerHTML += (startLen == 1) ? "" : "s"
     lyricLines.innerHTML += (lyricLen == 1) ? "" : "s"
     endLines.innerHTML   += (endLen   == 1) ? "" : "s"
-    var start = parseInt(startTimes.value.match(/^\s*([0-9.]+)/)[1]);
-    var end = parseInt(endTimes.value.match(/([0-9.]+)\s*$/)[1]);
-    if (start == end) {
-        lyricsConvert.disabled = true;
-        error.innerHTML = "Start and end times cannot be the same";
+    var start = startTimes.value.match(/^\s*([0-9.]+)/);
+    var end = endTimes.value.match(/([0-9.]+)\s*$/);
+    if (start == null || end == null) {
+        error.innerHTML = "Please specify both a start and an end time";
     } else {
-        lyricsConvert.disabled = false;
-        error.innerHTML = "";
+        start = parseInt(start[1]);
+        end = parseInt(end[1]);
+        if (start == end) {
+            lyricsConvert.disabled = true;
+            error.innerHTML = "Start and end times cannot be the same";
+        } else {
+            lyricsConvert.disabled = false;
+            error.innerHTML = "";
+        }
     }
 }
 

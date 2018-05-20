@@ -116,6 +116,8 @@ window.addEventListener("load", function() {
     currentMenu = menuLyrics;
     ctx = outputCanvas.getContext("2d");
 
+    playButton.disabled = true;
+
     fixCanvas();
     drawChange();
     drawStopSubmit();
