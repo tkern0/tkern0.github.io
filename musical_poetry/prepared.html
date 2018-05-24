@@ -20,10 +20,21 @@
         function oneWePreparedEarlier() {
             onYouTubeIframeAPIReady("_LypjOTTH6E");
             menuChange("menuAnimation");
-            // These two get overwritten by a script normally, so I can't just put them in the textarea
+            /*
+              These two get overwritten by a script normally, so I can't just
+               put them in the textarea
+              Plus, being able to use \n makes this way more compact
+            */
             startTimes.value = "38\n\n44\n\n50\n53\n56\n\n\n65\n\n71\n\n\n78\n\n\n93\n\n104\n107\n\n\n116\n\n\n125\n\n131\n\n137\n140\n\n144\n\n\n159\n\n176\n178\n\n\n191\n\n204\n\n\n219\n\n225\n\n237\n243";
             endTimes.value = "41\n\n\n\n52\n\n\n\n\n\n\n\n77\n\n84\n\n\n101\n\n\n\n\n\n\n\n\n\n\n\n\n\n143\n\n150\n\n\n167\n\n\n\n\n189\n197\n\n210\n214\n\n225\n\n232\n\n\n250";
             fixLineCount();
+            // If I let this change size then stuff might render offscreen
+            window.removeEventListener("resize", fixCanvas);
+            outputCanvas.width = 768;
+            outputCanvas.height = 432;
+            lyricsCircles.checked = false;
+            lyricsBoxes.checked = false;
+            lyricsLines.checked = false;
         }
     </script>
 </head>
@@ -96,7 +107,7 @@ Text: 0, #000000, "An unforgivable tragedy", "50px Arial", 120, 216
 Time: 107000, 110620
 Text: 0, #000000, "The answer isn't where you think you'd find it", "38px Arial", 7, 216
 Time: 110670, 112681
-Text: 0, #000000, "Prepare yourself for the reckoning", "50px Arial", 7, 216
+Text: 0, #000000, "Prepare yourself for a reckoning", "50px Arial", 7, 216
 Time: 112731, 115949
 Text: 0, #000000, "For when your world seems to crumble again", "38px Arial", 5, 216
 Time: 116000, 118795
@@ -188,7 +199,7 @@ Sometimes darkness can show you the light
 
 An unforgivable tragedy
 The answer isn't where you think you'd find it
-Prepare yourself for the reckoning
+Prepare yourself for a reckoning
 For when your world seems to crumble again
 Don't be afraid, don't turn away
 You’re the one who can redefine it
