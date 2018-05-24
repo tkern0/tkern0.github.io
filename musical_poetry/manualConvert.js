@@ -28,6 +28,7 @@ function manualNext() {
         manualStartTime = 0;
 
         if (syncPlayer.checked && player != null) {
+            player.seekTo(0, true);
             player.playVideo();
         }
 
