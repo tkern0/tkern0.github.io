@@ -76,6 +76,7 @@ function load() {
     pause();
     if (syncPlayer.checked && player != null) {
         player.pauseVideo();
+        player.seekTo(0, true);
     }
     elements = parseInput();
     time = 0;
