@@ -120,9 +120,9 @@ function togglePlaying() {
 
 var paused = true;
 var render = null;
-function pause() {
+function pause(includeVideo=true) {
     clearInterval(render);
-    if (syncPlayer.checked && player != null) {
+    if (includeVideo && syncPlayer.checked && player != null) {
         player.pauseVideo();
     }
     playButton.innerHTML = "Play";
@@ -160,7 +160,7 @@ function timeJumpFix() {
 function draw(forceRedraw=false, advance=true) {
     if (futureElements != null && currentElements != null &&
         futureElements.length == 0 && currentElements.length == 0) {
-        pause();
+        pause(false);
         return;
     }
 
