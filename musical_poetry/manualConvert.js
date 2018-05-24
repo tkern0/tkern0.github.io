@@ -27,6 +27,10 @@ function manualNext() {
         runningIntervals.manual = setInterval(manualUpdateTimer, WAIT_MS);
         manualStartTime = 0;
 
+        if (syncPlayer.checked && player != null) {
+            player.playVideo();
+        }
+
         manualButton.innerHTML = "Next Line";
     } else if (manualLineNum < manualLines.length){
         var line = manualLines[manualLineNum]
