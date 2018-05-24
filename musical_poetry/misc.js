@@ -61,6 +61,8 @@ var lyricsLines     = null;
 var lyricsConvert   = null;
 var drawPoint1Text  = null;
 var drawPoint2Text  = null;
+var hideVideoButton = null;
+var video           = null;
 window.addEventListener("load", function() {
     outputCanvas    = document.getElementById("outputCanvas");
     inputText       = document.getElementById("inputText");
@@ -111,6 +113,8 @@ window.addEventListener("load", function() {
     lyricsConvert   = document.getElementById("lyricsConvert");
     drawPoint1Text  = document.getElementById("drawPoint1Text");
     drawPoint2Text  = document.getElementById("drawPoint2Text");
+    hideVideoButton = document.getElementById("hideVideoButton");
+    video           = document.getElementById("video");
 
     // Some other stuff we can only do one the page is loaded
     currentMenu = menuLyrics;
@@ -186,8 +190,15 @@ function changeVideo() {
     var url = document.getElementById("videoLink").value
     var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
     var match = url.match(regExp);
-    videoID = (match && match[7].length == 11)? match[7] : "";
+    videoID = (match && match[7].length == 11) ? match[7] : "";
     // This div gets deleted by the yt api
-    document.getElementById("video").innerHTML = `<div id="player" class="center">No video currently loaded</div>`
+    video.innerHTML = `<div id="player" class="center">No video currently loaded</div>`
     onYouTubeIframeAPIReady(videoID);
+}
+
+var videoHidden = false;
+function hideVideo() {
+    hideVideoButton.innerHTML = (videoHidden) ? "Hide" : "Show";
+    video.style = (videoHidden) ? "" : "display: none;";
+    videoHidden = !videoHidden;
 }
