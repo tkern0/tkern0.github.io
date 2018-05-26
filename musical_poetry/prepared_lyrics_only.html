@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script type="text/javascript" src="https://www.youtube.com/iframe_api"></script>
+    <script type="text/javascript" src="animate.js"></script>
+    <script type="text/javascript" src="misc.js"></script>
+    <script type="text/javascript" src="lyrics.js"></script>
+    <script type="text/javascript" src="manualConvert.js"></script>
+    <script type="text/javascript" src="draw.js"></script>
+    <script type="text/javascript">
+        // Fix a few things specific to the demo
+
+        // Give the normal scripts time to initialize
+        window.addEventListener("load", function() {
+            window.setTimeout(oneWePreparedEarlier, 10);
+        });
+
+        function oneWePreparedEarlier() {
+            onYouTubeIframeAPIReady("_LypjOTTH6E");
+            menuChange("menuAnimation");
+            /*
+              These two get overwritten by a script normally, so I can't just
+               put them in the textarea
+              Plus, being able to use \n makes this way more compact
+            */
+            startTimes.value = "38\n\n44\n\n50\n53\n56\n\n\n65\n68\n71\n\n\n78\n\n\n93\n\n104\n107\n110\n\n116\n\n\n125\n\n131\n134\n\n140\n\n144\n\n\n159\n\n176\n178\n181\n184\n191\n\n204\n\n215\n219\n\n225\n\n237\n243";
+            endTimes.value = "41\n\n\n\n52\n\n\n\n\n\n\n\n77\n\n84\n\n\n101\n\n\n\n\n\n\n\n\n\n\n\n\n\n143\n\n150\n\n\n167\n\n\n\n\n189\n197\n\n210\n\n\n225\n\n232\n\n\n250";
+            fixLineCount();
+            // If I let this change size then stuff might render offscreen
+            window.removeEventListener("resize", fixCanvas);
+            outputCanvas.width = 768;
+            outputCanvas.height = 432;
+            lyricsCircles.checked = false;
+            lyricsBoxes.checked = false;
+            lyricsLines.checked = false;
+        }
+    </script>
+</head>
+<body>
+    <table class="center"><tr>
+    <td id="leftSide">
+        <h1>Musical Poetry in Motion</h1>
+        <canvas class="center" id="outputCanvas"></canvas>
+        <input id="timeSlider" type="range" min="0" max="100" value="0">
+        <div class="center" id="playerButtons">
+            <button onclick="togglePlaying()" id="playButton" disabled>Play</button>
+            <button onclick="load()">Load</button>
+            <input type="checkbox" id="syncPlayer" checked>Sync with Youtube video
+            <span class="right" id="timer">0:00.000/0:00.000</span>
+        </div>
+        <br>
+        <div class="center">
+            Youtube link: <input type="text" id="videoLink" value="https://www.youtube.com/watch?v=_LypjOTTH6E">
+            <button onclick="changeVideo()">Submit</button>
+            <button onclick="hideVideo()" id="hideVideoButton">Hide</button>
+        </div>
+        <div class="center" id="video">
+            <div id="player" class="center">No video currently loaded</div>
+        </div>
+    </td>
+    <td id="rightSide">
+        <div class="right" id="menuBar">
+            <button class="bigButton" onclick="menuChange('menuLyrics');">Lyrics</button>
+            <button class="bigButton" onclick="menuChange('menuDraw'); drawChange()">Draw</button>
+            <button class="bigButton" onclick="menuChange('menuManual'); manualSetup()">Manual Timing</button>
+            <button class="bigButton" onclick="menuChange('menuAnimation')">Animation Info</button>
+        </div>
+        <div hidden id="menuAnimation">
+            <textarea class="center fullWidth" id="inputText" rows=60>Time: 38000, 40950
+Text: 10, #000000, "Like an unsung melody", "50px Arial", 127, 216
+Time: 41000, 43950
+Text: 10, #000000, "The truth is waiting there for you to find it", "42px Arial", 5, 216
+Time: 44000, 46950
+Text: 10, #000000, "It's not a blight, but a remedy", "50px Arial", 64, 216
+Time: 47000, 49950
+Text: 10, #000000, "A clear reminder of how it began", "50px Arial", 24, 216
+Time: 50000, 51950
+Text: 10, #000000, "Deep inside your memory", "50px Arial", 99, 216
+Time: 53000, 55950
+Text: 10, #000000, "Turned away as you struggled to find it", "44px Arial", 7, 216
+Time: 56000, 59218
+Text: 10, #000000, "You heard the call as you walked away", "44px Arial", 6, 216
+Time: 59268, 62486
+Text: 10, #000000, "A voice of calm from within the silence", "45px Arial", 3, 216
+Time: 62536, 64950
+Text: 10, #000000, "And for what seemed an eternity", "50px Arial", 24, 216
+Time: 65000, 67950
+Text: 10, #000000, "You waited, hoping it would call out again", "42px Arial", 1, 216
+Time: 68000, 70950
+Text: 10, #000000, "You heard the shadow reckoning", "50px Arial", 21, 216
+Time: 71000, 73950
+Text: 10, #000000, "Then your fears seemed to keep you blinded", "38px Arial", 8, 216
+Time: 74000, 76950
+Text: 10, #000000, "You held your guard as you walked away", "42px Arial", 3, 216
+Time: 78000, 83950
+Text: 10, #000000, "When you think all is forsaken", "50px Arial", 52, 216
+Time: 84000, 89086
+Text: 10, #000000, "Listen to me now (all is not forsaken)", "47px Arial", 1, 216
+Time: 89136, 92950
+Text: 10, #000000, "You need never feel broken again", "50px Arial", 11, 216
+Time: 93000, 100950
+Text: 10, #000000, "Sometimes darkness can show you the light", "39px Arial", 4, 216
+Time: 104000, 106950
+Text: 10, #000000, "An unforgivable tragedy", "50px Arial", 120, 216
+Time: 107000, 109950
+Text: 10, #000000, "The answer isn't where you think you'd find it", "38px Arial", 7, 216
+Time: 110000, 112269
+Text: 10, #000000, "Prepare yourself for a reckoning", "50px Arial", 28, 216
+Time: 112319, 115950
+Text: 10, #000000, "For when your world seems to crumble again", "38px Arial", 5, 216
+Time: 116000, 118795
+Text: 10, #000000, "Don't be afraid, don't turn away", "50px Arial", 40, 216
+Time: 118845, 122106
+Text: 10, #000000, "You’re the one who can redefine it", "50px Arial", 7, 216
+Time: 122156, 124951
+Text: 10, #000000, "Don't let hope become a memory", "50px Arial", 17, 216
+Time: 125000, 127950
+Text: 10, #000000, "Let the shadow permeate your mind and", "42px Arial", 8, 216
+Time: 128000, 130950
+Text: 10, #000000, "Reveal the thoughts that were tucked away", "40px Arial", 2, 216
+Time: 131000, 133950
+Text: 10, #000000, "So that the door can be opened again", "45px Arial", 7, 216
+Time: 134000, 135815
+Text: 10, #000000, "Within your darkest memories", "50px Arial", 53, 216
+Time: 135865, 139950
+Text: 10, #000000, "Lies the answer if you dare to find it", "48px Arial", 6, 216
+Time: 140000, 142950
+Text: 10, #000000, "Don't let hope become a memory", "50px Arial", 17, 216
+Time: 144000, 149950
+Text: 10, #000000, "When you think all is forsaken", "50px Arial", 52, 216
+Time: 150000, 155086
+Text: 10, #000000, "Listen to me now (all is not forsaken)", "47px Arial", 1, 216
+Time: 155136, 158950
+Text: 10, #000000, "You need never feel broken again", "50px Arial", 11, 216
+Time: 159000, 166950
+Text: 10, #000000, "Sometimes darkness can show you the light", "39px Arial", 4, 216
+Time: 175500, 177950
+Text: 10, #000000, "Sickening, Weakening", "50px Arial", 137, 216
+Time: 178000, 180950
+Text: 10, #000000, "Don't let another somber pariah consume your soul", "33px Arial", 10, 216
+Time: 181000, 183950
+Text: 10, #000000, "You need strengthening, toughening", "47px Arial", 7, 216
+Time: 184000, 188950
+Text: 10, #000000, "It takes an inner dark to rekindle the fire burning in you", "31px Arial", 10, 216
+Time: 191000, 196950
+Text: 10, #000000, "Ignite the fire within you", "50px Arial", 121, 216
+Time: 204000, 209950
+Text: 10, #000000, "When you think all is forsaken", "50px Arial", 52, 216
+Time: 210000, 214950
+Text: 10, #000000, "Listen to me now (all is not forsaken)", "47px Arial", 1, 216
+Time: 215000, 218950
+Text: 10, #000000, "You need never feel broken again", "50px Arial", 11, 216
+Time: 219000, 224950
+Text: 10, #000000, "Sometimes darkness can show you the light", "39px Arial", 4, 216
+Time: 225000, 231950
+Text: 10, #000000, "Don't ignore, listen to me now (all is not forsaken)", "35px Arial", 1, 216
+Time: 232000, 236950
+Text: 10, #000000, "You need never feel broken again", "50px Arial", 11, 216
+Time: 237000, 242950
+Text: 10, #000000, "Sometimes darkness", "50px Arial", 151, 216
+Time: 243000, 249950
+Text: 10, #000000, "Can show you the light", "50px Arial", 131, 216</textarea>
+        </div>
+        <div hidden id="menuManual">
+            <div class="center" id="currentLine">Error finding lines</div>
+            <div class="center" id="nextLine">...</div>
+            <button class="center bigButton wideButton" onclick="manualNext()" id="manualButton">Start</button>
+            <div class="center" id="manualTimer">Current Time: 0:00.000</div>
+        </div>
+        <div id="menuLyrics">
+            <table class="fullWidth"><tr><td>
+                <table class="fullWidth"><tr>
+                    <td>Start Time</td>
+                    <td align="center">All times in seconds</td>
+                    <td align="right">End Time</td>
+                </tr></table>
+                <table><tr>
+                    <td><textarea id="startTimes" rows=50 cols=3></textarea></td>
+                    <td class="fullWidth"><textarea id="lyrics" class="fullWidth" rows=50 placeholder="Paste lyrics here">>Like an unsung melody
+The truth is waiting there for you to find it
+It's not a blight, but a remedy
+A clear reminder of how it began
+Deep inside your memory
+Turned away as you struggled to find it
+You heard the call as you walked away
+A voice of calm from within the silence
+And for what seemed an eternity
+You waited, hoping it would call out again
+You heard the shadow reckoning
+Then your fears seemed to keep you blinded
+You held your guard as you walked away
+
+When you think all is forsaken
+Listen to me now (all is not forsaken)
+You need never feel broken again
+Sometimes darkness can show you the light
+
+An unforgivable tragedy
+The answer isn't where you think you'd find it
+Prepare yourself for a reckoning
+For when your world seems to crumble again
+Don't be afraid, don't turn away
+You’re the one who can redefine it
+Don't let hope become a memory
+Let the shadow permeate your mind and
+Reveal the thoughts that were tucked away
+So that the door can be opened again
+Within your darkest memories
+Lies the answer if you dare to find it
+Don't let hope become a memory
+
+When you think all is forsaken
+Listen to me now (all is not forsaken)
+You need never feel broken again
+Sometimes darkness can show you the light
+
+Sickening, Weakening
+Don't let another somber pariah consume your soul
+You need strengthening, toughening
+It takes an inner dark to rekindle the fire burning in you
+Ignite the fire within you
+
+When you think all is forsaken
+Listen to me now (all is not forsaken)
+You need never feel broken again
+Sometimes darkness can show you the light
+
+Don't ignore, listen to me now (all is not forsaken)
+You need never feel broken again
+Sometimes darkness
+Can show you the light</textarea></td>
+                    <td><textarea id="endTimes" rows=50 cols=3></textarea></td>
+                </tr></table>
+                <table class="fullWidth"><tr><td id="startLines">??? Lines</td>
+                    <td align="center" id="lyricLines">??? Lines</td>
+                    <td align="right" id="endLines">??? Lines</td>
+                </tr></table>
+            </td><td id="lyricOptions" hidden>
+                <h1 class="center">Options</h1>
+                <div class="center">
+                    Default Font:
+                    <input id="lyricsFontSize" type="number" value="50">
+                    <input id="lyricsFont" value="Arial"><br>
+                </div>
+                <span class="center">Text may be made smaller to fit on screen</span>
+                <br>
+                <div class="center">Backgrounds:</div>
+                <table class=center><tr>
+                    <td><img src="circles.png" alt="Circles" width="200"></td>
+                    <td><img src="boxes.png" alt="Boxes" width="200"></td>
+                    <td><img src="lines.png" alt="Lines" width="200"></td>
+                </tr><tr>
+                    <td><input type="checkbox" class="center" id="lyricsCircles" checked></td>
+                    <td><input type="checkbox" class="center" id="lyricsBoxes" checked></td>
+                    <td><input type="checkbox" class="center" id="lyricsLines" checked></td>
+                </tr></table>
+            </td></tr></table>
+            <table class="fullWidth"><tr>
+                <td><button onclick="lyricTimes()">Reset Times</button></td>
+                <td><button class="center bigButton wideButton" onclick="convertLyrics()" id="lyricsConvert" disabled>Convert</button></td>
+                <td class="right"><button onclick="lyricOptionsToggle()">Options</button></td>
+            </tr></table>
+            <div class="center" id="error"></div>
+        </div>
+        <div id="menuDraw" hidden>
+            <br>
+            <select class="center bigButton wideButton" id="drawOptions">
+                <option value="rect">Rectangle</option>
+                <option value="rectFull">Filled Rectangle</option>
+                <option value="line">Line</option>
+                <option value="circle">Circle</option>
+                <option value="circleFull">Filled Circle</option>
+                <option value="text">Text</option>
+            </select>
+            <div class="center">
+                <span id="selectColourText">Select Colour:&nbsp;</span>
+                <input type="color" id="drawColour">
+            </div>
+            <span class="center">Time (seconds):</span>
+            <table class="center"><tr>
+                <td>Start: <input id="drawStartTime" type="number" step=0.001 value="0.000"></td>
+                <td>End: <input id="drawEndTime" type="number" step=0.001 value="0.000"></td>
+            </tr><tr>
+                <td><button class="center" onclick="drawCurrent(true)" id="drawCurrentStart">Current</button></td>
+                <td><button class="center" onclick="drawCurrent(false)" id="drawCurrentEnd">Current</button></td>
+            </tr></table>
+            <div class="center">
+                Z Value:
+                <input id="drawZ" type="number" value="0">
+            </div>
+            <table class="center"><tr>
+                <td><span id="drawPoint1Text">Point 1:</span></td>
+                <td><input id="drawX1" type="number" value="0"></td>
+                <td><input id="drawY1" type="number" value="0"></td>
+            </tr><tr id="drawPoint2" hidden>
+                <td><span id="drawPoint2Text">Point 2:</span></td>
+                <td><input id="drawX2" type="number" value="0"></td>
+                <td><input id="drawY2" type="number" value="0"></td>
+            </tr></table>
+            <div id="drawRadius" hidden>
+                <div class="center">
+                    Radius:
+                    <input id="drawRadiusValue" type="number" value="0" min="0">
+                </div>
+            </div>
+            <button class="center" onclick="drawSelectToggle()" id="drawSelect">Select on Canvas</button>
+            <div id="drawText" hidden>
+                <table class="center"><tr>
+                    <td>String:</td>
+                    <td><input id="drawString" value="Example String"></td>
+                </tr><tr>
+                    <td>Font:</td>
+                    <td><input id="drawFont" value="25px Arial"></td>
+                </tr></table>
+            </div>
+            <div id="drawError">
+                <h1 class="center">Could not find correct sub-menu</h1>
+            </div>
+            <br>
+            <button class="center" onclick="drawPreview()">Preview</button>
+            <button class="center bigButton wideButton" onclick="drawSubmitButton()" id="drawSubmit" disabled>Submit</button>
+            <span class="center" id="drawTimeError">Start and end times cannot be the same</span>
+        </div>
+    </td>
+    </tr></table>
+</body>
