@@ -84,6 +84,8 @@ function load() {
     timeSlider.max = maxTime;
     if (elements.length != 0) {
         playButton.disabled = false;
+    } else {
+        playButton.disabled = true;
     }
 }
 

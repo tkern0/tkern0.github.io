@@ -194,6 +194,7 @@ function changeVideo() {
     // This div gets deleted by the yt api
     video.innerHTML = `<div id="player" class="center">No video currently loaded</div>`
     onYouTubeIframeAPIReady(videoID);
+    lyricTimes();
 }
 
 var videoHidden = false;
