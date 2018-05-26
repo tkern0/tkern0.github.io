@@ -1,9 +1,7 @@
 var WAIT_MS = 1000/60;
 
-// Chrome can't wait decimal ms and rounds down so the animation runs fast
-if (!!window.chrome && !!window.chrome.webstore) {
-    WAIT_MS = Math.round(WAIT_MS);
-}
+// Decimal ms could make animation run fast
+WAIT_MS = Math.round(WAIT_MS);
 
 /*
   This is just one basic way of editing it I wanted to fiddle with, we
