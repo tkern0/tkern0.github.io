@@ -197,10 +197,10 @@ function convertText(text, startTime, endTime) {
         switch (lineStyle) {
             case "circles":
                 for (var j = 0; j < randInt(25, 50); j++) {
-                    x = randInt(-25, C_WIDTH + 25);
-                    y = (j % 2 == 0) ? 5*C_HEIGHT/6 : C_HEIGHT/6
-                    y += randInt(-C_HEIGHT/6 - 25, C_HEIGHT/6 + 25);
-                    r = randInt(10, 50);
+                    x = Math.round(randInt(-25, C_WIDTH + 25));
+                    y = Math.round((j % 2 == 0) ? 5*C_HEIGHT/6 : C_HEIGHT/6);
+                    y += Math.round(randInt(-C_HEIGHT/6 - 25, C_HEIGHT/6 + 25));
+                    r = Math.round(randInt(10, 50));
                     inputText.value += "Circle: -1, #7f7f7f, " + x + ", " + y
                                     + ", " + r + "\n"
                 }
@@ -208,11 +208,11 @@ function convertText(text, startTime, endTime) {
 
             case "boxes":
                 for (var j = 0; j < randInt(25, 50); j++) {
-                    x = randInt(-50, C_WIDTH + 50);
-                    y = (j % 2 == 0) ? 5*C_HEIGHT/6 : C_HEIGHT/6
-                    y += randInt(-C_HEIGHT/6 - 25, C_HEIGHT/6 + 25);
-                    w = randInt(20, 120);
-                    h = randInt(20, 120);
+                    x = Math.round(randInt(-50, C_WIDTH + 50));
+                    y = Math.round((j % 2 == 0) ? 5*C_HEIGHT/6 : C_HEIGHT/6);
+                    y += Math.round(randInt(-C_HEIGHT/6 - 25, C_HEIGHT/6 + 25));
+                    w = Math.round(randInt(20, 120));
+                    h = Math.round(randInt(20, 120));
                     inputText.value += "Rect: -1, #7f7f7f, " + x + ", " + y
                                     + ", " + w + ", " + h + "\n"
                 }
@@ -220,20 +220,20 @@ function convertText(text, startTime, endTime) {
 
             case "lines":
                 for (var j = 0; j < randInt(25, 50); j++) {
-                    x1 = randInt(-25, C_WIDTH + 25);
-                    y1 = (j % 2 == 0) ? 5*C_HEIGHT/6 : C_HEIGHT/6
-                    y1 += randInt(-C_HEIGHT/6 - 25, C_HEIGHT/6 + 25);
-                    x2 = randInt(-25, C_WIDTH + 25);
-                    y2 = (j % 2 == 0) ? 5*C_HEIGHT/6 : C_HEIGHT/6
-                    y2 += randInt(-C_HEIGHT/6 - 25, C_HEIGHT/6 + 25);
+                    x1 = Math.round(randInt(-25, C_WIDTH + 25));
+                    y1 = Math.round((j % 2 == 0) ? 5*C_HEIGHT/6 : C_HEIGHT/6);
+                    y1 += Math.round(randInt(-C_HEIGHT/6 - 25, C_HEIGHT/6 + 25));
+                    x2 = Math.round(randInt(-25, C_WIDTH + 25));
+                    y2 = Math.round((j % 2 == 0) ? 5*C_HEIGHT/6 : C_HEIGHT/6);
+                    y2 += Math.round(randInt(-C_HEIGHT/6 - 25, C_HEIGHT/6 + 25));
                     inputText.value += "Line: -1, #7f7f7f, " + x1 + ", " + y1
                                     + ", " + x2 + ", " + y2 + "\n"
                 }
                 for (var j = 0; j < randInt(3, 10); j++) {
-                    x1 = randInt(-25, C_WIDTH + 25);
-                    y1 = C_HEIGHT/6 + randInt(-C_HEIGHT/6 - 25, C_HEIGHT/6 + 25);
-                    x2 = randInt(-25, C_WIDTH + 25);
-                    y2 = 5*C_HEIGHT/6 + randInt(-C_HEIGHT/6 - 25, C_HEIGHT/6 + 25);
+                    x1 = Math.round(randInt(-25, C_WIDTH + 25));
+                    y1 = Math.round(C_HEIGHT/6 + randInt(-C_HEIGHT/6 - 25, C_HEIGHT/6 + 25));
+                    x2 = Math.round(randInt(-25, C_WIDTH + 25));
+                    y2 = Math.round(5*C_HEIGHT/6 + randInt(-C_HEIGHT/6 - 25, C_HEIGHT/6 + 25));
                     inputText.value += "Line: -1, #7f7f7f, " + x1 + ", " + y1
                                     + ", " + x2 + ", " + y2 + "\n"
                 }
