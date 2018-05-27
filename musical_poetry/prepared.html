@@ -47,7 +47,7 @@
                it saves time though, decompressing is probably slower
             */
             inputText.value = await new JSZip.external.Promise(function (resolve, reject) {
-                JSZipUtils.getBinaryContent('_data.zip', function(err, data) {
+                JSZipUtils.getBinaryContent('data.zip', function(err, data) {
                     if (err) {
                         reject(err);
                     } else {
