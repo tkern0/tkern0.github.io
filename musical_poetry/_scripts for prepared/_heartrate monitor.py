@@ -9,9 +9,10 @@ CW = W/2
 CH = H/2
 
 s = 1
+frame_time = 33
 
 output = open("_out", "w")
-output.write("Time: {}, {}\n".format(START, SCALE_START))
+output.write("Time: {}, {}\n".format(START, SCALE_START + frame_time))
 output.write("RectFull: -1, #000000, {}, {}, {}, {}\n".format(int(CW-(CW*s)), int(CH-(CH*s)), int(2*CW*s), int(2*CH*s)))
 output.write("Line: 0, #00FF00, {}, {}, {}, {}\n".format(int(CW-(CW*s)), int(CH), int(CW-(W*s/8)), int(CH)))
 output.write("Line: 0, #00FF00, {}, {}, {}, {}\n".format(int(CW-(W*s/8)), int(CH), int(CW-(W*s/16)), int(CH-(H*s/4))))
@@ -22,7 +23,6 @@ output.write("Line: 0, #00FF00, {}, {}, {}, {}\n".format(int(CW+(W*s/8)), int(CH
 START = 400
 
 refresh_time = 1000
-frame_time = 33
 for i in range(START, END, refresh_time):
     if i + refresh_time < END:
         for time in range(i, i + refresh_time, frame_time):

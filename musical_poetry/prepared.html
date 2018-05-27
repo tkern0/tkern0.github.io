@@ -20,7 +20,7 @@
             window.setTimeout(oneWePreparedEarlier, 10);
         });
 
-        async function oneWePreparedEarlier() {
+        function oneWePreparedEarlier() {
             onYouTubeIframeAPIReady("_LypjOTTH6E");
             menuChange("menuAnimation");
             /*
@@ -46,8 +46,8 @@
               It also compresses ~90% so saves quite a bit of data, don't think
                it saves time though, decompressing is probably slower
             */
-            inputText.value = await new JSZip.external.Promise(function (resolve, reject) {
-                JSZipUtils.getBinaryContent('data.zip', function(err, data) {
+            new JSZip.external.Promise(function (resolve, reject) {
+                JSZipUtils.getBinaryContent("data.zip", function(err, data) {
                     if (err) {
                         reject(err);
                     } else {
@@ -56,9 +56,16 @@
                 });
             }).then(function (data) {
                 return JSZip.loadAsync(data);
-            }).then(function (data) {
-                return data.file("data.txt").async("string");
-            })
+            }).then(async function (data) {
+                inputText.value = await data.file("data.txt").async("string");
+                /*
+                  I don't think garbage collection works properly on this for
+                   some reason, so it saves this massive string twice, and
+                   causes the animation to lag
+                  I think manually setting it to null helps
+                */
+                data = null;
+            });
         }
     </script>
 </head>
