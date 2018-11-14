@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <style>
+        #sidebar {
+            z-index: 10;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 33%;
+            height: 100%;
+            background-color: #FFFFFF;
+            border-right: 1px solid;
+            transition: all .2s;
+        }
+        #sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        #sidebarButtonHiding {
+            z-index: 2;
+            position: absolute;
+            top: 0;
+            right: -1px;
+            width: 0.8em;
+            height: 5em;
+            background-color: #FFFFFF;
+            border-right: 1px solid;
+        }
+        #sidebarButton {
+            z-index: 1;
+            position: absolute;
+            top: 0;
+            right: -1.5em;
+            writing-mode: vertical-lr;
+            text-orientation: upright;
+            border-radius: 8px;
+            padding-left: 0.5em;
+        }
+
+        #content {
+            z-index: 10;
+            padding: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar" class="collapsed">
+        <div id="sidebarButtonHiding"></div>
+        <input type="submit" value="Help" onclick="document.getElementById('sidebar').classList.toggle('collapsed')" id="sidebarButton"></input>
+        <div id="content" >
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus eu suscipit mi. Curabitur sit amet tortor dolor. Fusce consequat dignissim tincidunt. Quisque ornare felis eu rhoncus vulputate. Sed lectus augue, sollicitudin quis laoreet id, molestie vitae elit. In eu felis sit amet magna tincidunt mattis. Sed neque ipsum, porttitor at tristique et, accumsan tempus purus. Nam pharetra metus eget ex tincidunt consequat. Curabitur scelerisque eros ut gravida aliquam. Nulla cursus, erat in mattis placerat, sapien ligula eleifend lacus, vel facilisis libero dolor et tellus. Aliquam erat volutpat. Duis vel volutpat tellus, ac euismod odio. Ut vulputate nunc et fermentum condimentum.
+            <br>
+            Etiam non posuere nunc. Maecenas ultrices viverra vestibulum. Nullam et urna ex. Sed sit amet sapien sed lorem pretium suscipit. Suspendisse pulvinar orci vitae eleifend sollicitudin. Nam pulvinar fermentum ligula a rutrum. Duis interdum, nunc a cursus faucibus, mauris orci finibus sapien, vitae hendrerit tortor nisi ut magna.
+            <br>
+            Donec ornare vestibulum erat, non aliquet mi eleifend ut. Aenean id interdum magna, non aliquet nisi. Vestibulum sit amet augue eu leo ultricies tincidunt. Quisque pulvinar, nisl nec imperdiet dignissim, nisi est placerat sem, at placerat nisi urna in erat. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Integer scelerisque massa vel ornare dignissim. Ut erat dolor, scelerisque et felis nec, sodales bibendum sapien. Proin congue vestibulum ligula, scelerisque efficitur eros porta sed. Interdum et malesuada fames ac ante ipsum primis in faucibus. Ut sit amet vulputate neque, a dapibus purus. Vestibulum cursus lacus est, nec sodales sapien dictum a. Nam iaculis, dui sed auctor malesuada, ante erat tincidunt ligula, eget gravida elit eros sed mauris. Duis nec nisl arcu. Ut viverra egestas eros, sit amet pulvinar sem tristique id.
+            <br>
+            Nam vehicula urna non lacinia eleifend. Vestibulum et lorem laoreet, laoreet metus a, venenatis lorem. Etiam cursus sapien velit, nec cursus ipsum imperdiet vitae. Maecenas sed tellus at velit aliquet pretium in at purus. Integer cursus nulla at augue aliquet faucibus. Quisque non felis nec ex malesuada congue ac sit amet sapien. Nam a sapien augue.
+            <br>
+            Suspendisse consequat accumsan velit vel rhoncus. Phasellus quis congue velit. In ligula nisl, semper et ex ut, vulputate porttitor diam. Maecenas in nisi a neque dictum malesuada quis vitae dolor. Sed condimentum, felis a rhoncus pretium, purus est rutrum dolor, ut egestas mi nulla sed dolor. Morbi placerat, mauris vitae consequat hendrerit, quam odio facilisis eros, et iaculis leo orci vel sem. Mauris dictum diam tortor, et tincidunt velit aliquet at. Pellentesque a libero ex. In quis lacinia dui. Vivamus sit amet scelerisque mi. Donec metus dolor, bibendum sit amet vulputate vel, porta vitae enim. Morbi faucibus, arcu hendrerit laoreet pharetra, nisi nulla ultrices enim, id efficitur dolor enim ut sapien. Vestibulum pretium, ipsum a cursus tincidunt, nibh risus ornare diam, ut venenatis lectus ex quis est.
+        </div>
+    </div>
+</body>
