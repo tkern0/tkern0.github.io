@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
+
+body {
+    font-family: Roboto Mono;
+}
+
+#mainContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    position: absolute;
+    left: 50%;
+    -ms-transform: translate(-50%, 0.5em);
+    transform: translate(-50%, 0.5em);
+}
+#inputHex, #inputDec, #inputOct {
+    width: 15em;
+    height: 1.4em;
+    margin: 0.25em;
+    padding-right: 0.2em;
+    text-align: right;
+    font-size: 1.5em
+}
+
+#sizeContainer, #adjustSize {
+    width: 97%;
+    display: flex;
+    justify-content: space-between;
+}
+
+#sizeUp, #sizeDown {
+    width: 33%;
+}
+
+#bitInput {
+    font-size: 1.5em;
+    margin-right: -1em;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.red {
+    color: red;
+}
+.grey {
+    color: grey;
+}
+
+.sub {
+    display: inline-block;
+    width: 1em;
+    position: relative;
+    right: 1.5em;
+    bottom: -0.3em;
+    font-size: 0.4em;
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script type="text/javascript" src="main.js"></script>
+    <script src="https://peterolson.github.io/BigInteger.js/BigInteger.min.js"></script>
+</head>
+<body>
+    <div id="mainContainer">
+        <input id="inputHex" type="text" placeholder="Hex"></input>
+        <input id="inputDec" type="text" placeholder="Decimal"></input>
+        <input id="inputOct" type="text" placeholder="Octal"></input>
+        <div id="sizeContainer">
+            <span id="adjustSize">
+                <button id="sizeUp" onclick="adjustSize(2)" type="button" disabled>&lt</button>
+                <span id="sizeLabel">64</span>
+                <button id="sizeDown" onclick="adjustSize(0.5)" type="button">&gt</button>
+            </span>
+            <button id="signedButton" onclick="toggleSigned()" type="button">S</button>
+        </div>
+        <div id="bitInput">
+            <br>
+            <span class="bitRow"></span>
+            <span class="sub">48</span>
+            <br>
+            <span class="bitRow"></span>
+            <span class="sub">32</span>
+            <br>
+            <span class="bitRow"></span>
+            <span class="sub">16</span>
+            <br>
+            <span class="bitRow"></span>
+            <span class="sub">0</span>
+        </div>
+    </div>
+</body>
