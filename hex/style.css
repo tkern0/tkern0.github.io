@@ -1,5 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
 
+@media (max-width: 1000px) {
+    body {
+        font-size: 3vw;
+    }
+}
+
 body {
     font-family: Roboto Mono;
 }
