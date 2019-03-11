@@ -132,9 +132,11 @@ function fixDisplays(ignore) {
     }
     if ((ignore & IGNORE_HEX) == 0) {
         inputHex.value = hex;
+        inputHex.classList.remove("red");
     }
     if ((ignore & IGNORE_OCT) == 0) {
         inputOct.value = oct;
+        inputOct.classList.remove("red");
     }
 
     // If negative signed number
@@ -150,6 +152,7 @@ function fixDisplays(ignore) {
     }
     if ((ignore & IGNORE_DEC) == 0) {
         inputDec.value = dec;
+        inputDec.classList.remove("red");
     }
 }
 
