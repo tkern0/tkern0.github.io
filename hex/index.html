@@ -8,16 +8,16 @@
 </head>
 <body>
     <div id="mainContainer">
-        <input id="inputHex" type="text" placeholder="Hex"></input>
-        <input id="inputDec" type="text" placeholder="Decimal"></input>
-        <input id="inputOct" type="text" placeholder="Octal"></input>
+        <input id="inputHex" oninput="validateHex()" type="text" placeholder="Hex"></input>
+        <input id="inputDec" oninput="validateDec()" placeholder="Decimal"></input>
+        <input id="inputOct" oninput="validateOct()" placeholder="Octal"></input>
         <div id="sizeContainer">
             <span id="adjustSize">
-                <button id="sizeUp" onclick="adjustSize(2)" type="button" disabled>&lt</button>
-                <span id="sizeLabel">64</span>
+                <button id="sizeUp" onclick="adjustSize(2)" type="button">&lt</button>
+                <span id="sizeLabel">32</span>
                 <button id="sizeDown" onclick="adjustSize(0.5)" type="button">&gt</button>
             </span>
-            <button id="signedButton" onclick="toggleSigned()" type="button">S</button>
+            <button id="signedButton" onclick="toggleSigned()" type="button">U</button>
         </div>
         <div id="bitInput">
             <br>

@@ -14,9 +14,9 @@ window.addEventListener("load", function() {
     sizeLabel    = document.getElementById("sizeLabel");
     sizeUp       = document.getElementById("sizeUp");
 
-    inputDec.addEventListener("input", validateDec);
-    inputHex.addEventListener("input", validateHex);
-    inputOct.addEventListener("input", validateOct);
+    inputDec.value = "";
+    inputHex.value = "";
+    inputOct.value = "";
 
     // Setup bit display, easier than hardcoding it
     index = 63;
@@ -27,7 +27,7 @@ window.addEventListener("load", function() {
         for (i = 0; i < 4; i++) {
             for (j = 0; j < 4; j++) {
                 data += `<span id="bit` + index + `" onclick="toggleBit(` + index
-                        + `)" class="pointer">0</span>`;
+                        + `)" class="` + (index >= 32 ? "grey": "pointer") + `">0</span>`;
                 index--;
             }
             data += " ";
@@ -37,8 +37,8 @@ window.addEventListener("load", function() {
     }
 });
 
-var signed = true;
-var wordSize = 64;
+var signed = false;
+var wordSize = 32;
 
 /*
   Javascript uses doubles, which loses precision before 64 bits
@@ -77,7 +77,8 @@ function adjustSize(amount) {
         bit.classList.add("pointer");
         bit.classList.remove("grey");
     }
-    fixDisplays()
+
+    fixDisplays();
 }
 
 function toggleSigned() {
@@ -94,7 +95,11 @@ function toggleBit(index) {
     fixDisplays();
 }
 
-function fixDisplays() {
+const IGNORE_BIT = 0b0001;
+const IGNORE_DEC = 0b0010;
+const IGNORE_HEX = 0b0100;
+const IGNORE_OCT = 0b1000;
+function fixDisplays(ignore) {
     /*
       Calculate our value
       Using a bigInt here just to do all the toString conversions
@@ -105,11 +110,15 @@ function fixDisplays() {
         bit = document.getElementById("bit" + i);
         if (values[i]) {
             val = val.add(1);
-            bit.classList.add("red");
-            bit.innerHTML = "1";
+            if ((ignore & IGNORE_BIT) == 0) {
+                bit.classList.add("red");
+                bit.innerHTML = "1";
+            }
         } else {
-            bit.classList.remove("red");
-            bit.innerHTML = "0";
+            if ((ignore & IGNORE_BIT) == 0) {
+                bit.classList.remove("red");
+                bit.innerHTML = "0";
+            }
         }
     }
     hex = val.toString(16);
@@ -121,8 +130,12 @@ function fixDisplays() {
     for (i = oct.length - 3; i > 0; i -= 3) {
         oct = oct.slice(0, i) + " " + oct.slice(i);
     }
-    inputHex.value = hex;
-    inputOct.value = oct;
+    if ((ignore & IGNORE_HEX) == 0) {
+        inputHex.value = hex;
+    }
+    if ((ignore & IGNORE_OCT) == 0) {
+        inputOct.value = oct;
+    }
 
     // If negative signed number
     if (signed && values[wordSize - 1] == 1) {
@@ -135,16 +148,112 @@ function fixDisplays() {
         }
         dec = dec.slice(0, i) + "," + dec.slice(i);
     }
-    inputDec.value = dec;
+    if ((ignore & IGNORE_DEC) == 0) {
+        inputDec.value = dec;
+    }
 }
 
+/*
+  Annoyingly while oninput fires on pretty much all inputs, it's after the change has happened
+  It also doesn't return data in my firefox install
+  So instead of intercepting the event we'll just make the textbox red when invalid
+*/
 function validateDec() {
-    // TODO
+    val = inputDec.value.replace(/[\s,]/g, "");
+    // Without this you can only get back to 0
+    if (val == "") {
+        emptyInputs();
+        return;
+    }
+
+    // Make sure we have the right characters
+    if (/^-?\d*$/.test(val)) {
+        // Don't want negative numbers on unsigned
+        if (signed || !val.startsWith("-")) {
+            if (val == "-") {
+                return;
+            }
+            /*
+              Make sure you stay within the limits of your word size
+              This is easier for the other two because each digit in those represents a constant
+               amount of bits, unlike decimal
+            */
+            num = bigInt(val);
+            min = signed ? bigInt(2).pow(wordSize - 1).multiply(-1) : 0;
+            max = bigInt(2).pow(wordSize - signed).subtract(1);
+
+            if (num.greaterOrEquals(min) && num.lesserOrEquals(max)) {
+                inputDec.classList.remove("red");
+                // We don't want to overwrite what you just wrote
+                changeValue(num, IGNORE_DEC);
+                return;
+            }
+        }
+    }
+
+    inputDec.classList.add("red");
 }
 
 function validateHex() {
-    // TODO
+    val = inputHex.value.replace(/\s/g, "");
+    if (val == "") {
+        emptyInputs();
+        return;
+    }
+
+    if (/^[0-9a-f]*$/i.test(val)) {
+        // Each character represents 4 bits so we can just check the input length
+        if (val.length <= wordSize/4) {
+            inputHex.classList.remove("red");
+            changeValue(bigInt(val, 16), IGNORE_HEX);
+            return;
+        }
+    }
+
+    inputHex.classList.add("red");
 }
+
 function validateOct() {
-    // TODO
+    val = inputOct.value.replace(/\s/g, "");
+    if (val == "") {
+        emptyInputs();
+        return;
+    }
+
+    if (/^[0-7]*$/.test(val)) {
+        if (val.length <= Math.ceil(wordSize/3)) {
+            inputOct.classList.remove("red");
+            changeValue(bigInt(val, 8), IGNORE_OCT);
+            return;
+        }
+    }
+
+    inputOct.classList.add("red");
+}
+
+// Really this works well as a general purpose function but it was one of the last things I wrote
+function changeValue(val, ignore=0) {
+    negative = val.isNegative();
+    if (negative) {
+        values[wordSize - 1] = 1;
+        val = val.add(1);
+    }
+    for (i = 0; i < wordSize; i++) {
+        values[i] = val.isOdd() ^ negative;
+        val = val.divide(2);
+    }
+    fixDisplays(ignore);
+}
+
+function emptyInputs() {
+    values = Array(64).fill(0);
+    fixDisplays();
+    // fixDisplays will set these to 0 but we want to empty them
+    inputDec.value = "";
+    inputHex.value = "";
+    inputOct.value = "";
+    inputDec.classList.remove("red");
+    inputHex.classList.remove("red");
+    inputOct.classList.remove("red");
+
 }
